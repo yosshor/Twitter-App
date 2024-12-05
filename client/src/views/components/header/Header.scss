@@ -26,12 +26,18 @@
     align-items: center;
     cursor: pointer;
     gap: 10px;
+    text-decoration: none;
 }
 
-title {
+.title {
     margin: 0;
     font-size: 2rem;
-    color: #333;
+    color: black;
+    a{
+        text-decoration: none;
+    }
+
+
 }
 
 .user-actions {
@@ -48,6 +54,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
+    list-style: none;
 }
 
 .logo {

@@ -3,6 +3,7 @@ import App from "./App";
 import ErrorPage from "./views/components/errorPage/ErrorPage";
 import Login from "./views/components/login/Login";
 import Register from "./views/components/register/Register";
+import Home from "./views/components/home/Home";
 
 
 
