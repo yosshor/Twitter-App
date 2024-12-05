@@ -1,0 +1,63 @@
+#auth-forms {
+  padding: 20px;
+  width: 100%;
+}
+
+#register-form {
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+#register-form input {
+  width: 250px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #dbdbdb;
+}
+
+#register-form button {
+  background-color: #3897f0;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#register-form button:hover {
+  background-color: #2874c1;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+  margin: 0 auto;
+}
+
+
+.email,
+.password,
+.first-name,
+.last-name,
+.profile-image {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+
+  label {
+    width: 100px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-right: 10px;
+  }
+
+
+}
