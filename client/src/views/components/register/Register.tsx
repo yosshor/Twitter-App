@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import "./Register.scss";
+import { useNavigate } from "react-router-dom";
 
 
 const Register: React.FC = () => {
@@ -9,6 +10,7 @@ const Register: React.FC = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const navigate = useNavigate(); // Initialize useNavigate hook inside the component
 
   const handleRegisterSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -59,7 +61,10 @@ const Register: React.FC = () => {
             console.log("Profile picture uploaded successfully");
             const { token } = await response.json();
             document.cookie = `auth=${token}; path=/`;
-            window.location.href = "../recipe/index.html";
+            
+            Swal.fire("User Created", "User created successfully!", "success");
+            navigate("/home"); // Programmatically navigate to "/home"
+
           } else {
             Swal.fire("Upload Image", "Failed to upload profile picture!", "warning");
           }

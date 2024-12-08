@@ -1,0 +1,39 @@
+.sidebar {
+  width: 200px;
+  padding: 20px;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  height: 97%;
+
+}
+
+.sidebar__profile {
+  text-align: left;
+  padding: 10px;
+
+}
+
+.sidebar__profileImage {
+  width: 50px;
+  border-radius: 50%;
+}
+
+.sidebar__links button {
+  background: none;
+  border: none;
+  padding: 10px;
+  margin: 5px 0;
+  cursor: pointer;
+  color: black;
+  width: 50%;
+  text-align: left;
+
+}
+
+.sidebar__links {
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
+
+}

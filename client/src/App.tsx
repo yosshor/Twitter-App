@@ -7,7 +7,7 @@ import Header from './views/components/header/Header'
 function App() {
   return (
     <>
-      <Header />
+      <Header isActive={false}/>
       <Outlet />
     </>
   )

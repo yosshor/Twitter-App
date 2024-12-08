@@ -1,0 +1,39 @@
+.postForm {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    height: max-content;
+  }
+  
+  .postForm__textarea {
+    width: 95%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+  }
+  
+  .postForm__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .postForm__button {
+    background-color: #1DA1F2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .postForm__image {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+  }
+  
