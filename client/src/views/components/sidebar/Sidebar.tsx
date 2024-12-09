@@ -1,29 +1,53 @@
 import './Sidebar.scss';
 import type { userDetails } from '../../../../../src/models/User';
 import { FC } from 'react';
+import { Link, Outlet } from 'react-router-dom';
+import ActionButton from '../buttons/Buttons';
+import { faClipboard, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
 interface SidebarProps {
   userData: userDetails;
 }
 
 
 const Sidebar: FC<SidebarProps> = ({ userData }) => {
-  console.log('userData', userData);
+
+  const handleProfile = () => console.log('Navigating to user profile...');
+  const handleHome = () => console.log('Navigating to Home...');
+  const handlePost = () => console.log('Navigating to Post page...');
+
+
   return (
     <div className="sidebar">
       <div className="sidebar__profile">
         <img
-          src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Twitter_Logo_2012.svg"
+          src={`../../../../../${userData.profileImage}`} // This is the path to the user's profile image
           alt="Twitter Logo"
           className="sidebar__profileImage"
         />
-        <p>{userData.fullName}</p>
-        <p>{userData.email}</p>
+        <p>Welcome {userData.fullName}</p>
       </div>
       <div className="sidebar__links">
-        <button>Home</button>
-        <button>Profile</button>
-        <button>Lists</button>
+        <Link to="/home" >
+          <button className='button'>
+            <ActionButton icon={faHouse} label="Home" onClick={handleHome} />
+          </button>
+        </Link>
+        <div>
+          <Link to="/profile" >
+            <button className='button'>
+              <ActionButton icon={faUser} label="Profile" onClick={handleProfile} />
+            </button>
+          </Link>
+        </div>
+        <div>
+          <Link to="/posts" >
+            <button className='button'>
+            <ActionButton icon={faClipboard} label="Posts" onClick={handlePost} />
+            </button>
+          </Link>
+        </div>
         <button>Topics</button>
+        <Outlet />
       </div>
     </div>
   );

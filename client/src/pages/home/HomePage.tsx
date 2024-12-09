@@ -1,45 +1,40 @@
-
-import { useEffect, useState } from 'react';
 import Sidebar from '../../views/components/sidebar/Sidebar';
-import Feed from '../../views/components/feed/Feed';
+// import Feed from '../../views/components/feed/Feed';
 import './Home.scss';
 import Header from '../../views/components/header/Header';
-import getCurrentUser from '../../utils/get-current-user/get-current-user';
-import type { userDetails } from '../../../../src/models/User';
+import useCurrentUser from '../../hooks/useCurrentUser';
+import { Outlet } from 'react-router-dom';
+// import { useState } from 'react';
 
 function Home() {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [userData, setUserData] = useState(null);
+  // const [posts, setPosts] = useState<any[]>([]);
+  const { userData, loading } = useCurrentUser();
 
-  // Function to add new post
-  const addPost = (newPost: any) => {
-    setPosts([newPost, ...posts]);
-  };
-
-  useEffect(() => {
-    const fetchUserData = async (): Promise<userDetails> => {
-      const user = await getCurrentUser();
-      console.log('Fetched user data:', user); // Logs fetched user data
-      setUserData(user ?? null); // Use null if no data is returned
-      return user;
-    };
-    fetchUserData();
-  }, []);
-
+  // // Function to add new post
+  // const addPost = (newPost: any) => {
+  //   setPosts([newPost, ...posts]);
+  // };
 
   return (
     <div className="home">
-      <Header isActive={true} />
+      <Header isActive={!!userData} />
       <div className="main-content">
-        {userData ? (
-          <>
-            <Sidebar userData={userData} />
-            <Feed posts={posts} addPost={addPost} />
-          </>
-        ) : (
+        {loading ? (
           <div>Loading user data...</div>
+        ) : (
+          <>
+            {userData ? (
+              <>
+                <Sidebar userData={userData} />
+                {/* <Feed posts={posts} addPost={addPost} /> */}
+              </>
+            ) : (
+              <div>No user data found.</div>
+            )}
+          </>
         )}
       </div>
+      <Outlet />
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "./App";
+// import App from "./App";
 import ErrorPage from "./views/components/errorPage/ErrorPage";
 import Login from "./views/components/login/Login";
 import Register from "./views/components/register/Register";
 import { lazy, Suspense } from "react";
+import UserProfile from "./pages/profile/UserProfile";
 
 const Home = lazy(() => import('../../client/src/pages/home/HomePage'));
 
@@ -12,8 +13,8 @@ const Home = lazy(() => import('../../client/src/pages/home/HomePage'));
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    errorElement:<ErrorPage />,
+    element: <Home />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/login",
@@ -23,9 +24,13 @@ export const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
-      
+      {
+        path: "/profile",
+        element: <UserProfile />,
+      },
+
     ]
-    
+
   },
   {
     path: "/home",
@@ -34,8 +39,6 @@ export const router = createBrowserRouter([
         <Home />
       </Suspense>
     ),
-    errorElement:<ErrorPage />,
-  }
-  
- 
+  },
+
 ]);

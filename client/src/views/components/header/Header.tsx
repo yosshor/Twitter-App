@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import './Header.scss'
 import { FC } from 'react';
+import { faRightFromBracket, faRightToBracket, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import ActionButton from '../buttons/Buttons';
 
 
 interface HeaderProps {
@@ -10,7 +12,19 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ isActive }) => {
 
-  const activeClass = isActive ? 'active-link' : '';
+  const handleLogOut = () => {
+    console.log('User logged out!');
+  };
+
+  const handleLogIn = () => {
+    console.log('User logged in!');
+  };
+
+  const handleRegister = () => {
+    console.log('User registering...');
+  };
+  console.log('isActive:', isActive); // Logs isActive prop
+  const activeClass = isActive ? 'active-link' : 'inactive-link';
   const header = <div>
     <header className='header'>
       <div className='logo-header'>
@@ -21,18 +35,30 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
           <h1 className='title'>Twitter</h1>
         </Link>
       </div>
-      <div className='user-actions'>
-        <div id="user-actions">
+      {isActive === false ? <div className='user-actions'>
+        <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
           <Link to="/login" className={activeClass}>
-            <button className='button'>Login</button>
+            <button className='button'>
+              <ActionButton icon={faRightToBracket} label="Login" onClick={handleLogIn} />
+            </button>
           </Link>
         </div>
-        <div id="user-actions">
+        <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
           <Link to="/register" className={activeClass}>
-            <button className='button'>Register</button>
+            <button className='button'>
+              <ActionButton icon={faUserPlus} label="Register" onClick={handleRegister} />
+            </button>
           </Link>
         </div>
-      </div>
+      </div> :
+        <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
+          <Link to="/" className={activeClass}>
+            <button className='button'>
+              <ActionButton icon={faRightFromBracket} label="Logout" onClick={handleLogOut} />
+            </button>
+          </Link>
+        </div>
+      }
     </header>
   </div>
 

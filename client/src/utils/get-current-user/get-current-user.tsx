@@ -1,3 +1,6 @@
+// import { createContext } from 'react';
+// import type { userDetails } from '../../../../src/models/User';
+
 export default async function getCurrentUser() {
     try {
         const response = await fetch("/api/users/get-current-user", {
@@ -17,3 +20,6 @@ export default async function getCurrentUser() {
         console.error(error);
     }
 }
+
+// const user:userDetails = await getCurrentUser();
+// export const userDataContext = createContext(user);
