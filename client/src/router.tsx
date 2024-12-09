@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-// import App from "./App";
+import App from "./App";
 import ErrorPage from "./views/components/errorPage/ErrorPage";
 import Login from "./views/components/login/Login";
 import Register from "./views/components/register/Register";
@@ -13,7 +13,7 @@ const Home = lazy(() => import('../../client/src/pages/home/HomePage'));
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <App />,
     errorElement: <ErrorPage />,
     children: [
       {
