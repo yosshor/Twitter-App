@@ -3,7 +3,9 @@ import App from "./App";
 import ErrorPage from "./views/components/errorPage/ErrorPage";
 import Login from "./views/components/login/Login";
 import Register from "./views/components/register/Register";
-import Home from "./pages/home/HomePage";
+import { lazy, Suspense } from "react";
+
+const Home = lazy(() => import('../../client/src/pages/home/HomePage'));
 
 
 
@@ -16,18 +18,24 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
-        errorElement: <ErrorPage />
       },
       {
         path: "/register",
         element: <Register />,
-        errorElement: <ErrorPage />
-      }
+      },
+      
     ]
+    
   },
   {
     path: "/home",
-    element: <Home />,
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Home />
+      </Suspense>
+    ),
+    errorElement:<ErrorPage />,
   }
+  
  
 ]);

@@ -1,29 +1,13 @@
-import getCurrentUser from '../../../utils/get-current-user/get-current-user';
 import './Sidebar.scss';
-
-
-
-interface userDetails {
-  fullName: string;
-  email: string;
-  password: string;
-  profileImage: string;
-  isAdmin: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  id: string;
+import type { userDetails } from '../../../../../src/models/User';
+import { FC } from 'react';
+interface SidebarProps {
+  userData: userDetails;
 }
 
 
-const userData = async ():Promise<userDetails> => {
-  const user = await getCurrentUser();
-  console.log('user', user);
-  return user;
-}
-const userDetails = await userData();
-
-
-function Sidebar() {
+const Sidebar: FC<SidebarProps> = ({ userData }) => {
+  console.log('userData', userData);
   return (
     <div className="sidebar">
       <div className="sidebar__profile">
@@ -32,8 +16,8 @@ function Sidebar() {
           alt="Twitter Logo"
           className="sidebar__profileImage"
         />
-        <h2>{userDetails.fullName}</h2>
-        <p>Bio goes here...</p>
+        <p>{userData.fullName}</p>
+        <p>{userData.email}</p>
       </div>
       <div className="sidebar__links">
         <button>Home</button>

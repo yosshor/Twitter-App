@@ -42,3 +42,16 @@ userSchema.methods.comparePassword = async function(candidatePassword: string) {
 
 const User = mongoose.model('User', userSchema);
 export default User ;
+
+
+
+export interface userDetails {
+  fullName: string;
+  email: string;
+  password: string;
+  profileImage: string;
+  isAdmin: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  id: string;
+}

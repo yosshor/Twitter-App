@@ -8,7 +8,7 @@ export default async function getCurrentUser() {
         });
         if (response.ok) {
             const user = await response.json();
-            return user;
+            return user.user;
         }
         else {
             return null;
