@@ -13,7 +13,7 @@ const Login: React.FC = () => {
   const login = async (username: string, email: string, password: string): Promise<any | null> => {
     try {
       console.log(JSON.stringify({ username, email, password }));
-      const response = await fetch("https://localhost:3000/api/auth/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
