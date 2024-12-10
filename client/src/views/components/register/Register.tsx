@@ -37,7 +37,7 @@ const Register: React.FC = () => {
         profilePicture: profilePicture ?? null,
       };
 
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ const Register: React.FC = () => {
           const pictureFormData = new FormData();
           pictureFormData.append("profilePicture", profilePicture);
 
-          const uploadResponse = await fetch("/api/users/upload-profile-picture", {
+          const uploadResponse = await fetch("http://localhost:3000/api/users/upload-profile-picture", {
             method: "POST",
             body: pictureFormData,
           });

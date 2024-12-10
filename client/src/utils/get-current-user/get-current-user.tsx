@@ -3,7 +3,8 @@
 
 export default async function getCurrentUser() {
     try {
-        const response = await fetch("/api/users/get-current-user", {
+        
+        const response = await fetch("http://localhost:3000/api/users/get-current-user", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

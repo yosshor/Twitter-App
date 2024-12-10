@@ -14,7 +14,7 @@ const Sidebar: FC<SidebarProps> = ({ userData }) => {
   const handleProfile = () => console.log('Navigating to user profile...');
   const handleHome = () => console.log('Navigating to Home...');
   const handlePost = () => console.log('Navigating to Post page...');
-
+  
 
   return (
     <div className="sidebar">

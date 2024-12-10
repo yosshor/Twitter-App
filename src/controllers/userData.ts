@@ -4,6 +4,7 @@ import { getUserIdAndData } from "./uploadPictureController";
 export default async function getCurrentUser(req: any, res: any): Promise<void> {
   try {
     const { userId, userData } = getUserIdAndData(req);
+    
 
     console.log("userId", userId);
     const user = await mongoose.model("User").findOne({ _id: userId });

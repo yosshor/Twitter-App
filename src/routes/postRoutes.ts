@@ -25,14 +25,14 @@ const upload = multer({ dest: "uploads/" });
 router.post("/", authMiddleware, upload.single("image"), createPost);
 router.put("/update-recipe", recipeMiddleware, updatePost);
 router.post("/uploadRecipePicture", recipeGetRecipeId, uploadRecipePicture);
-router.get("/get-all", recipeMiddleware, getAllPosts);
+//router.get("/get-all", recipeMiddleware, getAllPosts);
 router.get("/get-recipe-details/:Id", recipeMiddleware, getPostData);
 router.post("/:id/like",recipeMiddleware, likePost);
 router.post("/:id/comment",recipeMiddleware, addComment);
 router.get("/search", recipeMiddleware, searchPost);
 router.get("/searchIngredients", recipeMiddleware, searchPostIngredients);
 router.get("/searchCategory", recipeMiddleware, searchPostsCategory);
-
+router.get("/getPosts", recipeMiddleware, getAllPosts);
 router.delete("/:Id/delete", recipeMiddleware, deletePost);
 
 

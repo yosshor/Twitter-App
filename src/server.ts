@@ -8,10 +8,14 @@ import authRoutes from './routes/authRoutes';
 import postRoutes from './routes/postRoutes';
 import userRoutes from './routes/userRoutes';
 import dotenv from 'dotenv';
+import cors from "cors";
+
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 console.log("Server starting...")
 app.use(bodyParser.json());
@@ -28,6 +32,7 @@ app.use(express.static(clientBuildPath));
 
 //get secret file
 const dbUri = process.env.MONGO_DB_CONNECTION!;
+console.log("DB URI:", process.env.MONGO_DB_CONNECTION);
 
 //connection to db
 mongoose.connect(dbUri).then(()=>{

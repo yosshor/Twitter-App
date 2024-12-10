@@ -7,6 +7,7 @@ const useCurrentUser = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    
     const fetchUserData = async () => {
       try {
         const user = await getCurrentUser();

@@ -56,13 +56,9 @@ export const updatePost = async (req: any, res: any) => {
 export const getAllPosts = async (req: Request, res: any) => {
   try {
     // Populate the user field to get all user information
-    const posts = await Post.find()
-      .populate("user")
-      .populate({
-        path: "comments",
-        populate: { path: "userId" },
-      })
-      .populate("likes");
+    
+    const posts = await Post.find().populate('userId', 'image').sort({ createdAt: -1 });
+
     res.status(200).json(posts); // Send posts if successful
   } catch (error) {
     console.error("Error fetching posts:", error); // Log error details

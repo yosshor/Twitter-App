@@ -6,14 +6,15 @@ import Register from "./views/components/register/Register";
 import { lazy, Suspense } from "react";
 import UserProfile from "./pages/profile/UserProfile";
 
-const Home = lazy(() => import('../../client/src/pages/home/HomePage'));
+
+const HomePage = lazy(() => import('../../client/src/pages/home/HomePage'));
 
 
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <HomePage />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
     path: "/home",
     element: (
       <Suspense fallback={<div>Loading...</div>}>
-        <Home />
+        <HomePage />
       </Suspense>
     ),
   },
