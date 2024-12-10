@@ -3,10 +3,11 @@
     padding: 20px;
     background-color: #ffffff;
     display: flex;
-    width: 60%;
+    width: 100%;
+    flex-direction: column;
   }
   
   .feed__posts {
     margin-top: 20px;
   }
-  
+ 

@@ -7,7 +7,7 @@ import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import { createContext } from "react";
 
-const devState = {mode: 'developer', url: 'http://localhost:3000'};
+const devState = { mode: 'developer', url: 'http://localhost:3000' };
 
 export const productionState = createContext(devState);
 
@@ -23,16 +23,14 @@ function Home() {
   };
 
   return (
-    <div className="home">
-      <Header isActive={!!userData} />
-      <div className="main-content">
+    <div className="home-wrapper">
+      <div className="main-feed-content">
         {loading ? (
           <div>Loading user data...</div>
         ) : (
           <>
             {userData ? (
               <>
-                <Sidebar userData={userData} />
                 <Feed posts={posts} addPost={addPost} />
               </>
             ) : (

@@ -1,13 +1,17 @@
 .app {
-    display: flex;
-    height: max-content;
-  }
+  display: flex;
+  height: max-content;
+}
 
-  .main-content{
-    width: 100%;
+.home-wrapper {
+  width: 50vw;
+
+  .main-feed-content {
+    width: 80%;
     padding: 20px;
     background-color: #f4f4f4;
     display: flex;
     flex-direction: row;
     height: 97vh;
   }
+}

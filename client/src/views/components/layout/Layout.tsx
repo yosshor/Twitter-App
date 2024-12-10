@@ -1,14 +1,23 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
-import Header from "../header/Header";
+import { FC } from 'react';
 
-const Layout: React.FC = () => {
+import { Outlet } from 'react-router-dom';
+import useCurrentUser from '../../../hooks/useCurrentUser'; // assuming you have this hook
+import Header from '../header/Header';
+import Sidebar from '../sidebar/Sidebar';
+import './Layout.scss';
+
+const Layout: FC = () => {
+  const { userData, loading } = useCurrentUser();
+
   return (
-    <div>
-      <Header />
-      <main>
-        <Outlet />
-      </main>
+    <div className="home">
+      <Header isActive={!!userData} />
+      <div className="main-content">
+        {userData && <Sidebar userData={userData} />}
+        <div className="content">
+          {loading ? <div>Loading user data...</div> : <Outlet />}
+        </div>
+      </div>
     </div>
   );
 };

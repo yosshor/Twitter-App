@@ -1,7 +1,7 @@
 import './Sidebar.scss';
 import type { userDetails } from '../../../../../src/models/User';
 import { FC, useContext } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ActionButton from '../buttons/Buttons';
 import { faClipboard, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
 import { productionState } from "../../../pages/home/HomePage";
@@ -44,12 +44,11 @@ const Sidebar: FC<SidebarProps> = ({ userData }) => {
         <div>
           <Link to="/posts" >
             <button className='button'>
-            <ActionButton icon={faClipboard} label="Posts" onClick={handlePost} />
+              <ActionButton icon={faClipboard} label="Posts" onClick={handlePost} />
             </button>
           </Link>
         </div>
         <button>Topics</button>
-        <Outlet />
       </div>
     </div>
   );
