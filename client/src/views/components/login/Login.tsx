@@ -1,30 +1,35 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import "./Login.scss"; // Import the compiled CSS from SCSS
 import { useNavigate } from "react-router-dom";
+import { productionState } from "../../../pages/home/HomePage";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // Initialize useNavigate hook inside the component
+  const state = useContext(productionState);
 
   // Refactored login function to use navigate inside the component
   const login = async (username: string, email: string, password: string): Promise<any | null> => {
     try {
       console.log(JSON.stringify({ username, email, password }));
-      const response = await fetch("/api/auth/login", {
+      const url = `${state.url}/api/auth/login`
+      console.log(url,document.cookie.split("userTwitter=")[1]);
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${document.cookie.split("userTwitter=")[1]}`,
         },
         body: JSON.stringify({ username, email, password }),
       });
 
       if (response.ok) {
-        const { token } = await response.json();
-        console.log(token);
+        const { token, jwtToken } = await response.json();
         document.cookie = `auth=${token}; path=/`;
+        document.cookie = `userTwitter=${jwtToken}; path=/`;
 
         // Redirect to the home page after login
         navigate("/home"); // Programmatically navigate to "/home"

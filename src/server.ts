@@ -8,10 +8,20 @@ import authRoutes from './routes/authRoutes';
 import postRoutes from './routes/postRoutes';
 import userRoutes from './routes/userRoutes';
 import dotenv from 'dotenv';
+import cors from 'cors';
+
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Allow requests from your frontend origin
+app.use(cors({
+  origin: "http://localhost:5173", // Frontend origin
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true, // Allow cookies if needed
+}));
+
 
 console.log("Server starting...")
 app.use(bodyParser.json());

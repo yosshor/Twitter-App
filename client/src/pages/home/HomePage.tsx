@@ -5,6 +5,13 @@ import Header from '../../views/components/header/Header';
 import useCurrentUser from '../../hooks/useCurrentUser';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
+import { createContext } from "react";
+
+const devState = {mode: 'developer', url: 'http://localhost:3000'};
+
+export const productionState = createContext(devState);
+
+
 
 function Home() {
   const [posts, setPosts] = useState<any[]>([]);

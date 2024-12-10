@@ -2,7 +2,6 @@ import path from "path";
 import multer from "multer";
 import User from "../models/User";
 import jwt from "jwt-simple";
-import { Post } from "../models/Post";
 
 // Configure multer storage
 const storage = multer.diskStorage({
@@ -25,6 +24,7 @@ export const uploadProfilePicture = [
     try {
       console.log("uploading image file");
       const { userId, userData } = getUserIdAndData(req);
+      console.log("user id:", userId, "user data:", userData);
       const user = await User.findById(userId);
       if (user) {
         user.profileImage = req.file.path;
@@ -40,18 +40,16 @@ export const uploadProfilePicture = [
   },
 ];
 
-
-
-
-
 // Function to get user id and data from the request
-export function getUserIdAndData(req: any): { userId: string; userData: string } {
-  const { userRecipe } = req.cookies;
+export function getUserIdAndData(req: any): {
+  userId: string;
+  userData: string;
+} {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  console.log("token on request header:", token, req.cookies);
   const secret = process.env.SECRET!;
   // jwt decode
-  const userData = jwt.decode(userRecipe, secret);
+  const userData = jwt.decode(token, secret);
   const userId = userData.userId;
   return { userId: userId, userData: userData };
 }
-
-

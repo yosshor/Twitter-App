@@ -1,27 +1,29 @@
 import './Sidebar.scss';
 import type { userDetails } from '../../../../../src/models/User';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import ActionButton from '../buttons/Buttons';
 import { faClipboard, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
+import { productionState } from "../../../pages/home/HomePage";
+
 interface SidebarProps {
   userData: userDetails;
 }
 
 
 const Sidebar: FC<SidebarProps> = ({ userData }) => {
-
+  const state = useContext(productionState);
   const handleProfile = () => console.log('Navigating to user profile...');
   const handleHome = () => console.log('Navigating to Home...');
   const handlePost = () => console.log('Navigating to Post page...');
-
-
+  const imageUrl = `${state.url}/${userData.profileImage}`;
+  console.log(imageUrl);
   return (
     <div className="sidebar">
       <div className="sidebar__profile">
         <img
-          src={`../../../../../${userData.profileImage}`} // This is the path to the user's profile image
-          alt="Twitter Logo"
+          src={imageUrl} // This is the image URL
+          alt="User Image"
           className="sidebar__profileImage"
         />
         <p>Welcome {userData.fullName}</p>

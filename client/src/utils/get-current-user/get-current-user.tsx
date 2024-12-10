@@ -1,12 +1,14 @@
-// import { createContext } from 'react';
-// import type { userDetails } from '../../../../src/models/User';
 
-export default async function getCurrentUser() {
+
+export default async function getCurrentUser(url: string) {
     try {
-        const response = await fetch("/api/users/get-current-user", {
+        const fullUrl = `${url}/api/users/get-current-user`
+        const token = document.cookie.split("userTwitter=")[1].split(";")[0];
+        const response = await fetch(fullUrl, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
         });
         if (response.ok) {
@@ -20,6 +22,3 @@ export default async function getCurrentUser() {
         console.error(error);
     }
 }
-
-// const user:userDetails = await getCurrentUser();
-// export const userDataContext = createContext(user);
