@@ -7,24 +7,25 @@ import { getUserIdAndData } from "../controllers/uploadPictureController";
 
 export function recipeMiddleware(req: any, res: Response, next: NextFunction) {
     try {
-      const { userData } = getUserIdAndData(req);
+      // const secret = process.env.SECRET as string;
+      // const { userData } = getUserIdAndData(req);
   
-      if (!userData) {
-        res.status(401).send({ error: "User not found" });
-        return;
-      }
-      let parsedUserData;
-      try {
-        parsedUserData = JSON.parse(JSON.stringify(userData));
-      } catch (error) {
-        res.status(400).send({ error: "Invalid user data" });
-        return;
-      }
-      const { userId, email, name, role } = parsedUserData;
-      if (!userId) {
-        res.status(401).send({ error: "User not found" });
-        return;
-      }
+      // if (!userData) {
+      //   res.status(401).send({ error: "User not found" });
+      //   return;
+      // }
+      // let parsedUserData;
+      // try {
+      //   parsedUserData = JSON.parse(JSON.stringify(userData));
+      // } catch (error) {
+      //   res.status(400).send({ error: "Invalid user data" });
+      //   return;
+      // }
+      // const { userId, email, name, role } = parsedUserData;
+      // if (!userId) {
+      //   res.status(401).send({ error: "User not found" });
+      //   return;
+      // }
       next();
     } catch (error) {
       console.error(error);

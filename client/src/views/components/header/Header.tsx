@@ -23,6 +23,9 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
   const handleRegister = () => {
     console.log('User registering...');
   };
+  const handleProfileRedirect=()=> {
+    console.log('User redirecting');
+  };
   console.log('isActive:', isActive); // Logs isActive prop
   const activeClass = isActive ? 'active-link' : 'inactive-link';
   const header = <div>
@@ -57,7 +60,16 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
               <ActionButton icon={faRightFromBracket} label="Logout" onClick={handleLogOut} />
             </button>
           </Link>
+          <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
+          <Link to="/profile" className={activeClass}>
+            <button className='button'>
+              <ActionButton icon={faRightFromBracket} label="ProfilePage" onClick={handleProfileRedirect} />
+            </button>
+          </Link>
         </div>
+        </div>
+        
+        
       }
     </header>
   </div>

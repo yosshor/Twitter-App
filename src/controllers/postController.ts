@@ -59,7 +59,7 @@ export const getAllPosts = async (req: Request, res: any) => {
     
     const posts = await Post.find().populate('userId', 'image').sort({ createdAt: -1 });
 
-    res.status(200).json(posts); // Send posts if successful
+    res.status(200).json({ posts }); // Send posts if successful
   } catch (error) {
     console.error("Error fetching posts:", error); // Log error details
     res.status(500).json({ error: "Failed to fetch posts" });
