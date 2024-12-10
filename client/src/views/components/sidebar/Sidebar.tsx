@@ -35,14 +35,14 @@ const Sidebar: FC<SidebarProps> = ({ userData }) => {
           </button>
         </Link>
         <div>
-          <Link to="/profile" >
+          <Link to="profile" >
             <button className='button'>
               <ActionButton icon={faUser} label="Profile" onClick={handleProfile} />
             </button>
           </Link>
         </div>
         <div>
-          <Link to="/posts" >
+          <Link to="posts" >
             <button className='button'>
               <ActionButton icon={faClipboard} label="Posts" onClick={handlePost} />
             </button>

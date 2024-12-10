@@ -23,10 +23,10 @@ export const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
-      {
-        path: "/profile",
-        element: <UserProfile />,
-      },
+      // {
+      //   path: "/profile",
+      //   element: <UserProfile />,
+      // },
     ]
   },
   {
@@ -38,9 +38,18 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/home",  // Ensure the Home page is rendered within the layout
-        element: <Home />
+        path: "", // Relative path for the home component (matches "/home")
+        element: <Home />,
       },
+      {
+        path: "profile", // Relative path for profile (matches "/home/profile")
+        element: <UserProfile />,
+      },
+      {
+        path: "posts", // Example for posts route (matches "/home/posts")
+        element: <div>Posts Page</div>, // Replace with your Posts component
+      },
+      
     ],
   },
 ]);
