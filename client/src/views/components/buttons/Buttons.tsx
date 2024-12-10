@@ -1,5 +1,7 @@
 import { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './Buttons.scss';
+
 
 interface ActionButtonProps {
     icon: any;
@@ -12,6 +14,7 @@ const ActionButton:FC<ActionButtonProps> = ({ icon, label, onClick }) => {
     return (
         <button
             onClick={onClick}
+            className={`button button__${label.toLocaleLowerCase()}`}
             style={{
                 display: 'flex',
                 alignItems: 'center',

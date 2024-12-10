@@ -30,10 +30,9 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
       <div className='logo-header'>
         <div className='logo'>
           <img src='https://seeklogo.com/images/T/twitter-icon-square-logo-108D17D373-seeklogo.com.png' alt='Twitter logo' />
+          <h2 className='title'>Twitter</h2>
         </div>
-        <Link to="/">
-          <h1 className='title'>Twitter</h1>
-        </Link>
+  
       </div>
       {isActive === false ? <div className='user-actions'>
         <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
