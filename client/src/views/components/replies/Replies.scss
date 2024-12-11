@@ -1,0 +1,73 @@
+.replies-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; // Space between replies
+    padding: 16px;
+
+    .reply-row {
+        display: flex;
+        gap: 12px; // Space between avatar and content
+        align-items: flex-start;
+
+        .avatar {
+            flex-shrink: 0; // Prevent avatar from shrinking
+            img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+
+        .reply-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            .user-details {
+                display: flex;
+                gap: 8px; // Space between name, handle, and timestamp
+                align-items: center;
+
+                .name {
+                    font-weight: bold;
+                    color: #000;
+                }
+
+                .handle {
+                    color: #555;
+                }
+
+                .timestamp {
+                    color: #888;
+                    font-size: 0.9em;
+                }
+            }
+
+            .text-content {
+                margin-top: 4px;
+                color: #333;
+            }
+
+            .media-container {
+                display: flex;
+                flex-wrap: wrap; // Wrap media into rows if needed
+                gap: 8px; // Space between media items
+                margin-top: 8px;
+
+                img {
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 8px;
+                    object-fit: cover;
+                    transition: transform 0.2s ease;
+
+                    &:hover {
+                        transform: scale(1.05);
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}

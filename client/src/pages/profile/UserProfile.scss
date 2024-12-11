@@ -1,0 +1,48 @@
+.user-profile-wrapper {
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(145, 145, 145);
+
+}
+
+.user-profile-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+
+}
+
+.joined-date {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    color: #666;
+    font-size: 0.9rem;
+
+    .icon {
+        margin-right: 8px;
+        color: #00acee;
+        /* Optional: Adjust the color to match the theme */
+        font-size: 1.2rem;
+    }
+}
+
+.followers-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f4f4;
+    margin-top: 20px;
+
+    p {
+        font-size: 1.2rem;
+        margin: 10px;
+    }
+}

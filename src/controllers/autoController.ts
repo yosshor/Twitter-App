@@ -65,7 +65,7 @@ export async function login(req: any, res: any): Promise<void> {
     console.log("Token:", userToken);
     console.log("Request body:", req.body);
 
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
 
     const user = await User.findOne({ email: req.body.email });
     if (!user) {

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Header.scss'
 import { FC } from 'react';
 import { faRightFromBracket, faRightToBracket, faUserPlus } from '@fortawesome/free-solid-svg-icons';
@@ -11,9 +11,13 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = ({ isActive }) => {
+  const navigate = useNavigate();
 
   const handleLogOut = () => {
     console.log('User logged out!');
+    document.cookie = "auth=; Max-Age=0; path=/";
+    document.cookie = "userTwitter=; Max-Age=0; path=/";
+    navigate('/'); // Redirect to home page
   };
 
   const handleLogIn = () => {

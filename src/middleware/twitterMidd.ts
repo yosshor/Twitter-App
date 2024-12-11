@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from "express";
 import { getUserIdAndData } from "../controllers/uploadPictureController";
 
 
-export function recipeMiddleware(req: any, res: Response, next: NextFunction) {
+export function twitterMiddleware(req: any, res: Response, next: NextFunction) {
     try {
       const { userData } = getUserIdAndData(req);
   
@@ -32,17 +32,17 @@ export function recipeMiddleware(req: any, res: Response, next: NextFunction) {
   }
 
 
-  export function recipeGetRecipeId(req: any, res: Response, next: NextFunction) {
-    const recipeId = req.query.recipeId;
-    if (!recipeId) {
-      res.status(400).send({ error: "Recipe not found" });
+  export function twitterGetPostId(req: any, res: Response, next: NextFunction) {
+    const postId = req.query.postId;
+    if (!postId) {
+      res.status(400).send({ error: "Post not found" });
       return;
     }
-    req.recipeId = recipeId;
+    req.postId = postId;
     console.log(req.recipeId);
     next();
   }
 
 
 
-export default recipeMiddleware;
+export default twitterMiddleware;

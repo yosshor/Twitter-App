@@ -12,9 +12,9 @@ const Login: React.FC = () => {
   const state = useContext(productionState);
 
   // Refactored login function to use navigate inside the component
-  const login = async (username: string, email: string, password: string): Promise<any | null> => {
+  const login = async (email: string, password: string): Promise<any | null> => {
     try {
-      console.log(JSON.stringify({ username, email, password }));
+      console.log(JSON.stringify({ email, password }));
       const url = `${state.url}/api/auth/login`
       console.log(url,document.cookie.split("userTwitter=")[1]);
       const response = await fetch(url, {
@@ -23,7 +23,7 @@ const Login: React.FC = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${document.cookie.split("userTwitter=")[1]}`,
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await login(username, email, password);
+    await login(email, password);
   };
 
   return (
@@ -53,15 +53,6 @@ const Login: React.FC = () => {
       <div id="auth-forms">
         <form id="sign-in-form" onSubmit={handleSubmit}>
           <h2>Sign In</h2>
-          <input
-            type="text"
-            name="username"
-            id="sign-in-username"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
           <input
             type="text"
             name="email"

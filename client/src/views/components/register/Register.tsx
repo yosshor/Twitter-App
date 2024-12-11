@@ -73,11 +73,12 @@ const Register: React.FC = () => {
             console.log("Profile picture uploaded successfully");
             Swal.fire("User Created", "User created successfully!", "success");
             navigate("/home"); // Programmatically navigate to "/home"
-
           } else {
             Swal.fire("Upload Image", "Failed to upload profile picture!", "warning");
           }
         }
+        Swal.fire("User Created", "User created successfully!", "success");
+        navigate("/home"); // Programmatically navigate to "/home"
       } else {
         Swal.fire("User Exists", "User already exists, please login!", "warning");
       }

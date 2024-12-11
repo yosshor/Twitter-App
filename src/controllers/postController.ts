@@ -10,10 +10,7 @@ export const createPost = async (req: any, res: any) => {
   try {
     const { userId, userData } = getUserIdAndData(req);
 
-    const {
-      content,
-      image
-    } = req.body;
+    const { content, image } = req.body;
     const post = new Post({
       user: userId,
       content: content,
@@ -32,10 +29,7 @@ export const updatePost = async (req: any, res: any) => {
   try {
     const { userId, userData } = getUserIdAndData(req);
     console.log("updatePost", req.body);
-    const {
-      content,
-      image,
-    } = req.body;
+    const { content, image } = req.body;
     const post = await Post.findById(req.body.postId);
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
@@ -56,14 +50,13 @@ export const updatePost = async (req: any, res: any) => {
 export const getAllPosts = async (req: Request, res: any) => {
   try {
     // Populate the user field to get all user information
-    const posts = await Post.find()
-      .populate("user")
-      .populate({
-        path: "comments",
-        populate: { path: "userId" },
-      })
-      .populate("likes");
-    res.status(200).json(posts); // Send posts if successful
+    // Populate the userId field to get user information (only fullName and email)
+    const posts = await Post.find().populate({
+      path: "userId", // Populate the userId field
+      select: "fullName email createdAt", // Select only the fields you need 
+    });
+
+    res.status(200).json({ posts: posts }); // Send posts if successful
   } catch (error) {
     console.error("Error fetching posts:", error); // Log error details
     res.status(500).json({ error: "Failed to fetch posts" });
@@ -168,8 +161,6 @@ export const searchPostsCategory = async (
   }
 };
 
-
-
 export const likePost = async (req: any, res: any): Promise<void> => {
   try {
     const { userId, userData } = getUserIdAndData(req);
@@ -220,5 +211,22 @@ export const addComment = async (req: any, res: any): Promise<void> => {
     res.json(post);
   } catch (error) {
     res.status(500).json({ error: "Failed to add comment" });
+  }
+};
+
+export const getUserPosts = async (req: any, res: any) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const posts = await Post.find({ userId }).sort({ createdAt: -1 });
+    console.log(userId);
+    res.status(200).json({ posts });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Failed to fetch posts" });
   }
 };
