@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Post from "../../views/components/post/Post";
 import useCurrentUser from "../../hooks/useCurrentUser";
+import styles from "./UserProfile.module.scss";
 
 type PostType = {
   content: string;
@@ -56,19 +57,21 @@ const UserProfile = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className={styles.main}>
       {userData ? (
         <div>
           <h1>Welcome, {userData.fullName}!</h1>
           <p>Email: {userData.email}</p>
-          <div className="userPosts">
+          <div className={styles["posts-container"]}>
             {error ? (
               <p>{error}</p>
             ) : posts.length === 0 ? (
               <p>No posts found for this user.</p>
             ) : (
               posts.map((post, index) => (
+                <div className={styles["post-card"]}>
                 <Post key={index} content={post.content} image={post.image} />
+                </div>
               ))
             )}
           </div>
