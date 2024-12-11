@@ -1,14 +1,7 @@
 import { FC } from 'react';
 import './Post.scss';
 
-// interface PostProps {
-//     content: string;
-//     image?: string;
-//     fullName: string;
-//     email: string;
-//     createdAt: string;
-//     }
-interface PostType {
+export interface PostType {
   content: string;
   image?: string;
   createdAt: string;

@@ -23,7 +23,7 @@ router.use(express.urlencoded({ extended: true }));
 
 const upload = multer({ dest: "uploads/" });
 
-router.post("/", authMiddleware, upload.single("image"), createPost);
+router.post("/",authMiddleware, upload.single("image"), createPost); //authMiddleware
 router.put("/update-post", twitterMiddleware, updatePost);
 router.post("/upload-post-picture", twitterGetPostId, uploadRecipePicture);
 router.get("/get-all", twitterMiddleware, getAllPosts);

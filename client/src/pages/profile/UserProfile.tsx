@@ -6,6 +6,7 @@ import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TwitterReplies from "../../views/components/replies/Replies";
 import Post from "../../views/components/post/Post";
+import { PostType } from "../../views/components/post/Post";
 
 
 

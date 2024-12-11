@@ -41,15 +41,21 @@ export const uploadProfilePicture = [
 ];
 
 // Function to get user id and data from the request
-export function getUserIdAndData(req: any): {
-  userId: string;
-  userData: string;
-} {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  console.log("token on request header:", token, req.cookies);
-  const secret = process.env.SECRET!;
-  // jwt decode
-  const userData = jwt.decode(token, secret);
-  const userId = userData.userId;
-  return { userId: userId, userData: userData };
+export function getUserIdAndData(req: any): {userId: string; userData: string;} 
+{
+  try {
+    console.log("request body:", req.body);
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const { userToken } = req.body;
+    console.log("token on request header:", token, userToken);
+    const secret = process.env.SECRET!;
+    // jwt decode
+    const userData = jwt.decode(userToken, secret);
+    const userId = userData.userId;
+    console.log("userId:", userId, "userData:", userData);
+    return { userId: userId, userData: userData };
+  } catch (error) {
+    console.error("Error getting user id and data:", error);
+    return { userId: "", userData: "" };
+  }
 }

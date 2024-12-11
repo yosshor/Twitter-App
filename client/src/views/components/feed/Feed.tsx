@@ -5,9 +5,9 @@ import { FC } from 'react';
 
 
 interface FeedProps {
-    posts: any[];
-    addPost: (newPost: any) => void;
-    }
+  posts: any[];
+  addPost: (newPost: any) => void;
+}
 
 
 const Feed: FC<FeedProps> = ({ posts, addPost }) => {
@@ -16,7 +16,7 @@ const Feed: FC<FeedProps> = ({ posts, addPost }) => {
       <PostForm addPost={addPost} />
       <div className="feed__posts">
         {posts.map((post, index) => (
-          <Post key={index} content={post.content} image={post.image} />
+          <Post key={index} {...post} />
         ))}
       </div>
     </div>

@@ -9,18 +9,18 @@ import mongoose from "mongoose";
 export const createPost = async (req: any, res: any) => {
   try {
     const { userId, userData } = getUserIdAndData(req);
-
-    const { content, image } = req.body;
+    console.log("createPost", userId, userData);
+    const { content } = req.body;
     const post = new Post({
-      user: userId,
+      userId: userId,
       content: content,
-      image: image,
+      image: null,
     });
 
     await post.save();
     res.status(200).send(post);
   } catch (err: any) {
-    console.error(err.message);
+    console.error("create post error ", err.message);
     res.status(500).json({ error: err.message });
   }
 };
@@ -53,7 +53,7 @@ export const getAllPosts = async (req: Request, res: any) => {
     // Populate the userId field to get user information (only fullName and email)
     const posts = await Post.find().populate({
       path: "userId", // Populate the userId field
-      select: "fullName email createdAt", // Select only the fields you need 
+      select: "fullName email createdAt", // Select only the fields you need (fullName and email)
     });
 
     res.status(200).json({ posts: posts }); // Send posts if successful
