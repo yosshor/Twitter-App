@@ -222,3 +222,20 @@ export const addComment = async (req: any, res: any): Promise<void> => {
     res.status(500).json({ error: "Failed to add comment" });
   }
 };
+export const getUserPosts = async (req: any, res: any) => {
+  try {
+    
+    const userId = req.userId; 
+    
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const posts = await Post.find({ userId }).sort({ createdAt: -1 });
+    console.log(userId);
+    res.status(200).json({ posts });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+};

@@ -25,6 +25,7 @@ export function recipeMiddleware(req: any, res: Response, next: NextFunction) {
         res.status(401).send({ error: "User not found" });
         return;
       }
+      req.userId = userId;
       next();
     } catch (error) {
       console.error(error);
