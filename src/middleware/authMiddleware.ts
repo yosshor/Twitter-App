@@ -17,11 +17,11 @@ function authMiddleware(req: any, res: Response, next: NextFunction): void {
   }
 
   try {
-    const verified = jwt.verify(token, "your_jwt_secret");
+    const verified = jwt.verify(token, process.env.SECRET!);
     req.user = verified;
-    const { userTwitter } = req.cookies;
+    // const { userTwitter } = req.cookies;
     const secret = process.env.SECRET!;
-    const { userId, email } = jwt1.decode(userTwitter, secret);
+    const { userId, email } = jwt1.decode(token, secret);
     next();
   } catch (err) {
     console.error("middleware Error", err);

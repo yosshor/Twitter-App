@@ -48,7 +48,7 @@ export const register = async (req: any, res: any) => {
       sameSite: "none", // Required for cross-origin requests
     });
 
-    const token = jwt.sign({ id: user._id }, "your_jwt_secret", {
+    const token = jwt.sign({ id: user._id }, process.env.SECRET!, {
       expiresIn: "12h",
     });
     console.log("Token generated:", token);
@@ -99,7 +99,7 @@ export async function login(req: any, res: any): Promise<void> {
       secure: false, // Set to true in production with HTTPS
       sameSite: "none", // Required for cross-origin requests
     });
-    const token = jwt.sign({ id: user._id }, "your_jwt_secret", {
+    const token = jwt.sign({ id: user._id }, process.env.SECRET!, {
       expiresIn: "12h",
     });
     console.log("Token generated:", token);

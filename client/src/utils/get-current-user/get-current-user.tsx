@@ -3,12 +3,15 @@
 export default async function getCurrentUser(url: string) {
     try {
         const fullUrl = `${url}/api/users/get-current-user`
-        const token = document.cookie.split("userTwitter=")[1].split(";")[0];
+        const tokenUser = document.cookie.split("userTwitter=")[1].split(";")[0];
+        // const tokenAuth = document.cookie.split("auth=")[1].split(";")[0];
+        // console.log("token:", tokenUser, tokenAuth);
         const response = await fetch(fullUrl, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Bearer ${tokenUser}`,
+                // "Auth": tokenAuth,
             },
         });
         if (response.ok) {

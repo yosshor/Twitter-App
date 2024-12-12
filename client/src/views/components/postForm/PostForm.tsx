@@ -13,7 +13,7 @@ function getCookie(name: string): string {
     }, "");
 }
 
-async function addPostImage(image: File, token: string, postId: string, url:string): Promise<void> {
+async function addPostImage(image: File, token: string, postId: string, url: string): Promise<void> {
     const imageFormData = new FormData();
     imageFormData.append("image", image);
     imageFormData.append("postId", postId);
@@ -37,18 +37,36 @@ const PostForm: FC<PostFormProps> = () => {
     const [content, setContent] = useState('');
     const [image, setImage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const state = useContext(productionState);
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setSelectedFile(e.target.files[0]); // Update state with the selected file
+        }
+    };
 
     const handlePostSubmit = async (e: any) => {
         e.preventDefault();
         try {
-            let file = null;
-            if (file) {
-                file = dataURItoBlob(file); // Convert base64 image to Blob
-            }
+            // Access the form elements by their names
+            // const form = e.target as HTMLFormElement;
+            // const imageFileInput = form.elements.namedItem("image") as HTMLInputElement;
+
+            // if (!imageFileInput) {
+            //     console.error("File input element not found");
+            //     return;
+            // }
+
+            // const imageFile = imageFileInput.files?.[0];
+            // console.log("imageFile:", imageFile);
+            // if (imageFile) {
+            //     file = dataURItoBlob(e.target.files[0]); // Convert base64 image to Blob
+            // }
 
             if (content.trim()) {
-                const token: string = getCookie("auth");
+                const token: string = getCookie("userTwitter");
                 console.log("token:", token);
                 const formData = new FormData();
                 formData.append("content", content);
@@ -66,18 +84,17 @@ const PostForm: FC<PostFormProps> = () => {
                     const postResponse = await response.json();
                     const postId = postResponse._id;
                     console.log("postId:", postId);
-                    // Upload the image separately after post creation
-                    // if (file) {
-                    //     const fileWithProperties = new File([file], "image.jpg", { type: file.type });
-                    //     console.log("fileWithProperties:", fileWithProperties);
-                    //     await addPostImage(fileWithProperties, token, postId, state.url);
-                    // }
 
+                    // Optionally, upload the image separately after post creation
+                    if (selectedFile) {
+                        await addPostImage(selectedFile, token, postId, state.url);
+                    }
                     // Add the post to the state (UI updates)
                     // addPost({ content, image });
 
                     // Clear form state
-                    setContent('');
+                    setContent("");
+                    setSelectedFile(null);
                     setImage(null);
                     console.log("Post created successfully");
                 } else {
@@ -90,23 +107,13 @@ const PostForm: FC<PostFormProps> = () => {
         }
     };
 
-    const handleImageChange = (e: any) => {
-        const file = e.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage(imageUrl);
-        }
-    };
-
-    const dataURItoBlob = (dataURI: string): Blob => {
-        const byteString = atob(dataURI.split(',')[1]);
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-        return new Blob([ab], { type: 'image/jpeg' });
-    };
+    // const handleImageChange = (e: any) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         const imageUrl = URL.createObjectURL(file);
+    //         setImage(imageUrl);
+    //     }
+    // };
 
     return (
         <div className="postForm">
@@ -117,7 +124,7 @@ const PostForm: FC<PostFormProps> = () => {
                 className="postForm__textarea"
             />
             <div className="postForm__actions">
-                <input type="file" onChange={handleImageChange} />
+                <input type="file" name='image' onChange={handleFileChange} />
                 <button onClick={handlePostSubmit} className="postForm__button">
                     Post
                 </button>
