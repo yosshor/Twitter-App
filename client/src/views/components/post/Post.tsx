@@ -1,5 +1,6 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import './Post.scss';
+import { productionState } from "../../../pages/home/HomePage"; 
 
 
 export interface PostType {
@@ -17,6 +18,8 @@ export interface PostType {
 }
 
 const Post: FC<PostType> = (postData) => {
+  const state = useContext(productionState);
+
   if (!postData.userId) return <div>No user data available.</div>;
   console.log('postData:', postData);
   const userHandle = postData.userId.fullName
@@ -25,7 +28,7 @@ const Post: FC<PostType> = (postData) => {
     .join("") || "";
   let imageUrl = postData.image;
   if(imageUrl){
-    imageUrl = imageUrl.includes('uploads\\posts') ? '../../../../../' + postData.image : postData.image;
+    imageUrl = imageUrl.includes('uploads\\posts') ? `${state.url.length > 0 ? state.url : '../../../../../'}/` + postData.image : postData.image;
   }
   console.log('imageUrl:', imageUrl);
   return (
