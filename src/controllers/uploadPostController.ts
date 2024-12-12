@@ -7,19 +7,18 @@ import fs from "fs";
 // Configure multer storage
 const storage = multer.diskStorage({
   destination: (req: any, file: any, cb: any) => {
-    cb(null, "uploads/recipes/");
+    cb(null, "uploads/posts/");
   },
   filename: (req: any, file: any, cb: any) => {
-    // const { userId, userData } = getUserIdAndData(req);
-    const recipeId = req.recipeId; // req.query.recipeId;
-    cb(null, `${recipeId}${path.extname(file.originalname)}`);
+    const postId = req.postId; 
+    cb(null, `${postId}${path.extname(file.originalname)}`);
   },
 });
 
 // Initialize multer with the storage configuration
 const upload = multer({ storage });
 // Controller to handle profile picture upload
-export const uploadRecipePicture = [
+export const uploadPostPicture = [
   upload.single("image"),
   async (req: any, res: any) => {
     try {
@@ -32,7 +31,7 @@ export const uploadRecipePicture = [
         // Save the new image path into the recipe details
         post.image = req.file.path;
         await post.save();
-        console.log("successfully upload and save path into recipe details");
+        console.log("successfully upload and save path into poste details");
         res.status(200).json(post);
       } else {
         res.status(404).json({ error: "User not found" });

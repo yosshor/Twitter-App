@@ -16,7 +16,7 @@ import multer from "multer";
 
 import authMiddleware from "../middleware/authMiddleware";
 import twitterMiddleware, { twitterGetPostId } from "../middleware/twitterMidd";
-import { uploadRecipePicture } from "../controllers/uploadRecipeController";
+import { uploadPostPicture } from "../controllers/uploadPostController";
 
 const router = express.Router();
 router.use(express.urlencoded({ extended: true }));
@@ -25,7 +25,7 @@ const upload = multer({ dest: "uploads/" });
 
 router.post("/",authMiddleware, upload.single("image"), createPost); //authMiddleware
 router.put("/update-post", twitterMiddleware, updatePost);
-router.post("/upload-post-picture", twitterGetPostId, uploadRecipePicture);
+router.post("/upload-post-picture", twitterGetPostId, uploadPostPicture);
 router.get("/get-all", twitterMiddleware, getAllPosts);
 router.get("/get-post-details/:Id", twitterMiddleware, getPostData);
 router.post("/:id/like", twitterMiddleware, likePost);

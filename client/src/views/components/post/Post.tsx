@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import './Post.scss';
 
+
 export interface PostType {
   content: string;
   image?: string;
@@ -22,11 +23,16 @@ const Post: FC<PostType> = (postData) => {
     .split(" ")
     .map((part) => part.toLowerCase().trim())
     .join("") || "";
+  let imageUrl = postData.image;
+  if(imageUrl){
+    imageUrl = imageUrl.includes('uploads\\posts') ? '../../../../../' + postData.image : postData.image;
+  }
+  console.log('imageUrl:', imageUrl);
   return (
     <div className="post">
       <h3>{postData.userId.fullName && ''} @{userHandle}</h3>
       <p>{postData.content}</p>
-      {postData.image && <img src={postData.image} alt="Post" className="post__image" />}
+      {postData.image && <img src={imageUrl} alt="Post" className="post__image" />}
     </div>
   );
 }
