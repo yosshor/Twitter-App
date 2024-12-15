@@ -8,6 +8,7 @@ import UserProfile from './pages/profile/UserProfile';
 import Layout from '../src/views/components/layout/Layout'; 
 
 const Home = lazy(() => import('../../client/src/pages/home/HomePage'));
+const Search = lazy(() => import('../../client/src/pages/search/Search'));
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,11 @@ export const router = createBrowserRouter([
         path: "posts", // Example for posts route (matches "/home/posts")
         element: <div>Posts Page</div>, // Replace with your Posts component
       },
+      {
+        path: "search", 
+        element: <Search />,
+      },
+      
       
     ],
   },
