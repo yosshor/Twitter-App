@@ -7,7 +7,6 @@ import { getUserIdAndData } from "../controllers/uploadPictureController";
 export function twitterMiddleware(req: any, res: Response, next: NextFunction) {
   try {
     const { userData } = getUserIdAndData(req);
-
     if (!userData) {
       res.status(401).send({ error: "User not found" });
       return;
@@ -24,6 +23,7 @@ export function twitterMiddleware(req: any, res: Response, next: NextFunction) {
       res.status(401).send({ error: "User not found" });
       return;
     }
+    req.userId = userId;
     next();
   } catch (error) {
     console.error(error);

@@ -30,7 +30,7 @@ const UserProfile = () => {
                     throw new Error("No token found in cookies");
                 }
 
-                const response = await fetch(`${state.url}/api/post/get-all`, { //get-user-posts`, {
+                const response = await fetch(`${state.url}/api/post/get-user-posts`, { 
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -119,8 +119,8 @@ const UserProfile = () => {
                     ))
                 )}
             </div>
-            <TwitterReplies />
-            <TwitterReplies />
+            {/* <TwitterReplies /> */}
+            {/* <TwitterReplies /> */}
         </>
     );
 };

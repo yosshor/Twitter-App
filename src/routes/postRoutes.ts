@@ -33,7 +33,7 @@ router.post("/:id/comment", twitterMiddleware, addComment);
 router.get("/search", twitterMiddleware, searchPost);
 // router.get("/search-ingredients", twitterMiddleware, searchPostIngredients);
 router.get("/search-post", twitterMiddleware, searchPostsCategory);
-router.post("/get-user-posts", twitterMiddleware, getUserPosts);
+router.get("/get-user-posts", twitterMiddleware, getUserPosts);
 router.delete("/:Id/delete", twitterMiddleware, deletePost);
 
 // module.exports = router;

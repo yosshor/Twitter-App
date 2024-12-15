@@ -165,16 +165,18 @@ export const searchPostsCategory = async (
   }
 };
 
+
+
 export const likePost = async (req: any, res: any): Promise<void> => {
   try {
-    const { userId, userData } = getUserIdAndData(req);
+    const { userId } = getUserIdAndData(req);
 
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    //remove like
+    // Remove like
     const searchLike = await Like.findOne({
       userId: userId,
       postId: post._id,
@@ -182,25 +184,29 @@ export const likePost = async (req: any, res: any): Promise<void> => {
 
     if (searchLike) {
       await Like.deleteOne({ _id: searchLike._id });
-      await searchLike.save();
-      console.log("remove like", searchLike);
-      return res
-        .status(200)
-        .json({ ok: "User already liked the Post, remove him" });
+      post.likes = post.likes.filter((likeId: any) => !likeId.equals(searchLike._id));
+      await post.save();
+      console.log("Removed like", searchLike);
+      return res.status(200).json({ message: "Like removed" });
     }
 
-    //add like
+    // Add like
     const like = new Like({
       userId: userId,
       postId: req.params.id,
     });
     await like.save();
-    console.log("add like", like);
+    post.likes.push(like._id);
+    await post.save();
+    console.log("Added like", like);
     res.json(like);
   } catch (error) {
-    res.status(500).json({ error: "Failed to like Post" });
+    console.error("Error liking post:", error);
+    res.status(500).json({ error: "Failed to like post" });
   }
 };
+
+
 
 export const addComment = async (req: any, res: any): Promise<void> => {
   try {
@@ -235,8 +241,14 @@ export const getUserPosts = async (req: any, res: any) => {
       return res.status(400).json({ error: "User ID is required" });
     }
 
-    const posts = await Post.find({ userId }).sort({ createdAt: -1 });
-    console.log(userId);
+    const posts = await Post.find({ userId }).populate({
+      path: "userId", // Populate the userId field
+      select: "fullName email createdAt profileImage",
+    }).populate({
+      path: "likes", // Populate the likes field
+      select: "userId createdAt", // Adjust the fields you want to select from the likes table
+    }).sort({ createdAt: -1 });
+
     res.status(200).json({ posts });
   } catch (error) {
     console.error("Error fetching posts:", error);

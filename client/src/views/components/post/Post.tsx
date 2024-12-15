@@ -11,6 +11,7 @@ export interface PostType {
   createdAt: string;
   updatedAt: string;
   _id: string;
+  likes: string[];
   userId: {
     fullName: string;
     email: string;
@@ -23,12 +24,11 @@ export interface PostType {
 
 const Post: FC<PostType> = (postData) => {
   const state = useContext(productionState);
-  const [likesCount, setLikesCount] = useState(0); //postData.likesCount ||
-  const [commentsCount, setCommentsCount] = useState(0); //postData.commentsCount ||
+  const [likesCount, setLikesCount] = useState(postData.likes.length); 
+  const [commentsCount, setCommentsCount] = useState(0); 
 
   const handleLike = () => {
     setLikesCount(likesCount + 1);
-    // Add logic to update like count in the backend
   };
 
   const handleComment = () => {
@@ -71,6 +71,7 @@ const Post: FC<PostType> = (postData) => {
           likesCount={likesCount}
           commentsCount={commentsCount}
           id={postData._id}
+
         />
       </div>
     );

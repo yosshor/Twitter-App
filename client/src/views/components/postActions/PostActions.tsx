@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
 import './PostActions.scss';
 import { productionState } from "../../../pages/home/HomePage";
+import { set } from 'mongoose';
 
 interface PostActionsProps {
     onLike: () => void;
@@ -11,12 +12,15 @@ interface PostActionsProps {
     likesCount: number;
     commentsCount: number;
     id: string,
+    // likeCount: number;
+    // setLikesCount: () => void;
 }
 
 const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, likesCount, commentsCount, id }) => {
     const [liked, setLiked] = useState(false);
     const state = useContext(productionState);
-    
+    const [likes, setLikesCount] = useState(likesCount);
+
     async function likePost(postId: string) {
         try {
             const userTwitterCookie = state.userTwitterCookie;
@@ -32,30 +36,36 @@ const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, l
                 },
             });
             if (response.ok) {
-                console.log("Post liked successfully");
-                // Navigate("/home");
+                const data = await response.json();
+                if (data.message === "Like removed") {
+                    setLikesCount(likes > 0 ? likes - 1 : 0);
+                    console.log("Post unliked successfully");
+
+                }
+                else {
+                    setLikesCount(likes + 1);
+                    console.log("Post liked successfully");
+                }
             } else {
-                console.error("Error liking recipe");
+                console.error("Error liking post");
+                setLikesCount(likes > 0 ? likes - 1 : 0);
             }
         } catch (error) {
-            console.error("Error liking recipe:", error);
+            console.error("Error liking post:", error);
+            setLikesCount(likes - 1);
         }
     }
 
     const handleLike = (postId: string) => {
-        console.log('postId:', postId);
         setLiked(!liked);
         likePost(postId);
-        // likeButton.textContent = `Like (${recipe.likes.length})`;
-        // likeButton.onclick = () => likeRecipe(recipe._id);
-        // recipeCard.appendChild(likeButton);
         onLike();
     };
 
     return (
         <div className="post-actions">
             <button onClick={() => handleLike(id)} className={liked ? 'liked' : ''}>
-                <FontAwesomeIcon icon={faHeart} /> {likesCount}
+                <FontAwesomeIcon icon={faHeart} /> {likes}
             </button>
             <button onClick={onComment}>
                 <FontAwesomeIcon icon={faComment} /> {commentsCount}
