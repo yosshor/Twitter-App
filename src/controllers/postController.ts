@@ -51,9 +51,13 @@ export const getAllPosts = async (req: Request, res: any) => {
   try {
     // Populate the user field to get all user information
     // Populate the userId field to get user information (only fullName and email)
+
     const posts = await Post.find().populate({
       path: "userId", // Populate the userId field
-      select: "fullName email createdAt profileImage", // Select only the fields you need (fullName and email)
+      select: "fullName email createdAt profileImage",
+    }).populate({
+      path: "likes", // Populate the likes field
+      select: "userId createdAt", // Adjust the fields you want to select from the likes table
     });
 
     res.status(200).json({ posts: posts }); // Send posts if successful
@@ -164,28 +168,37 @@ export const searchPostsCategory = async (
 export const likePost = async (req: any, res: any): Promise<void> => {
   try {
     const { userId, userData } = getUserIdAndData(req);
+
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    // //check if user already liked the recipe
-    // if (post.likes.includes(new mongoose.Types.ObjectId(userId))) {
-    //   //remove like
-    //   const like = await recipe.likes.findIndex(
-    //     (like: any) => like.user === userId
-    //   );
-    //   recipe.likes.splice(like, 1);
-    //   await recipe.save();
-    //   return res
-    //     .status(200)
-    //     .json({ ok: "User already liked the recipe, remove him" });
-    // }
-    // recipe.likes.push(new mongoose.Types.ObjectId(userId));
-    // await recipe.save();
-    res.json(post);
+    //remove like
+    const searchLike = await Like.findOne({
+      userId: userId,
+      postId: post._id,
+    });
+
+    if (searchLike) {
+      await Like.deleteOne({ _id: searchLike._id });
+      await searchLike.save();
+      console.log("remove like", searchLike);
+      return res
+        .status(200)
+        .json({ ok: "User already liked the Post, remove him" });
+    }
+
+    //add like
+    const like = new Like({
+      userId: userId,
+      postId: req.params.id,
+    });
+    await like.save();
+    console.log("add like", like);
+    res.json(like);
   } catch (error) {
-    res.status(500).json({ error: "Failed to like recipe" });
+    res.status(500).json({ error: "Failed to like Post" });
   }
 };
 

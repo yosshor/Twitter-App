@@ -50,27 +50,12 @@ const PostForm: FC<PostFormProps> = () => {
     const handlePostSubmit = async (e: any) => {
         e.preventDefault();
         try {
-            // Access the form elements by their names
-            // const form = e.target as HTMLFormElement;
-            // const imageFileInput = form.elements.namedItem("image") as HTMLInputElement;
-
-            // if (!imageFileInput) {
-            //     console.error("File input element not found");
-            //     return;
-            // }
-
-            // const imageFile = imageFileInput.files?.[0];
-            // console.log("imageFile:", imageFile);
-            // if (imageFile) {
-            //     file = dataURItoBlob(e.target.files[0]); // Convert base64 image to Blob
-            // }
 
             if (content.trim()) {
                 const token: string = getCookie("userTwitter");
                 console.log("token:", token);
                 const formData = new FormData();
                 formData.append("content", content);
-                // formData.append("image", file as Blob);
                 formData.append("userToken", getCookie("userTwitter"));
                 const response = await fetch(`${state.url}/api/post`, {
                     method: "POST",
@@ -85,13 +70,10 @@ const PostForm: FC<PostFormProps> = () => {
                     const postId = postResponse._id;
                     console.log("postId:", postId);
 
-                    // Optionally, upload the image separately after post creation
+                    //upload the image separately after post creation
                     if (selectedFile) {
                         await addPostImage(selectedFile, token, postId, state.url);
                     }
-                    // Add the post to the state (UI updates)
-                    // addPost({ content, image });
-
                     // Clear form state
                     setContent("");
                     setSelectedFile(null);
@@ -106,14 +88,6 @@ const PostForm: FC<PostFormProps> = () => {
             setError(err instanceof Error ? err.message : "An unknown error occurred");
         }
     };
-
-    // const handleImageChange = (e: any) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         const imageUrl = URL.createObjectURL(file);
-    //         setImage(imageUrl);
-    //     }
-    // };
 
     return (
         <div className="postForm">

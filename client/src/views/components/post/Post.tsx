@@ -60,7 +60,7 @@ const Post: FC<PostType> = (postData) => {
           <h3>{postData.userId.fullName && ''} @{userHandle}</h3>
           <p>{formatDistanceToNow(new Date(postData.createdAt), { addSuffix: true })}</p>
         </div>
-        <div className="post-details">
+        <div className="post-details" id={postData._id}>
           <p>{postData.content}</p>
           {postData.image && <img src={imageUrl} alt="Post" className="post__image" />}
         </div>
@@ -70,6 +70,7 @@ const Post: FC<PostType> = (postData) => {
           onShare={handleShare}
           likesCount={likesCount}
           commentsCount={commentsCount}
+          id={postData._id}
         />
       </div>
     );
