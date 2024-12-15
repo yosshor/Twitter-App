@@ -244,11 +244,10 @@ export const getUserPosts = async (req: any, res: any) => {
 export async function getPosts(req: any, res: any) {
   try {
       
-      const { userId } = req.body;
+       const userId = req.userId; 
     
-     
+      
       const following = await Following.findOne({ userId: userId }).populate('followingList', 'username');
-
       if (!following) {
           return res.status(200).json({ posts: [] }); 
       }

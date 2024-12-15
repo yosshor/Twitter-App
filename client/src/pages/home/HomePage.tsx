@@ -28,9 +28,14 @@ function Home() {
           .split("; ")
           .find((row) => row.startsWith("userTwitter="))
           ?.split("=")[1];
-        const response = await fetch('http://localhost:3000/api/post/getPosts')
+          const response = await fetch("http://localhost:3000/api/post/getPosts", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
         const data = await response.json();
-        console.log("the data is ",data);
         if (data.posts) {
           setPosts(data.posts);
         }
@@ -58,29 +63,6 @@ function Home() {
         )}
       </div>
 
-      
-      <div className="posts-container">
-        {posts.map((post) => (
-          <div key={post._id} className="post-card">
-            <div className="post-header">
-              <img
-                src={post.author.image}
-                alt={`${post.author.username}'s profile`}
-                className="author-image"
-              />
-              <span className="author-name">{post.author.username}</span>
-            </div>
-            <p className="post-content">{post.content}</p>
-            {post.imageURL && (
-              <img src={post.imageURL} alt="Post visual" className="post-image" />
-            )}
-            <div className="post-footer">
-              <button>Like ({post.likes.length})</button>
-              <button>Comments ({post.comments.length})</button>
-            </div>
-          </div>
-        ))}
-      </div>
 
       <Outlet />
     </div>

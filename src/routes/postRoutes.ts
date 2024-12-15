@@ -35,7 +35,7 @@ router.get("/search", recipeMiddleware, searchPost);
 router.get("/searchIngredients", recipeMiddleware, searchPostIngredients);
 router.get("/searchCategory", recipeMiddleware, searchPostsCategory);
 router.post("/get-user-posts",recipeMiddleware,getUserPosts)
-router.get("/getPosts", getPosts);
+router.get("/getPosts", recipeMiddleware,getPosts);
 
 router.delete("/:Id/delete", recipeMiddleware, deletePost);
 
