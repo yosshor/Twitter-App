@@ -10,7 +10,8 @@ import {
   updatePost,
   searchPostsCategory,
   likePost,
-  getUserPosts
+  getUserPosts,
+  getPosts
 } from "../controllers/postController";
 import multer from "multer";
 
@@ -34,6 +35,7 @@ router.get("/search", recipeMiddleware, searchPost);
 router.get("/searchIngredients", recipeMiddleware, searchPostIngredients);
 router.get("/searchCategory", recipeMiddleware, searchPostsCategory);
 router.post("/get-user-posts",recipeMiddleware,getUserPosts)
+router.get("/getPosts", getPosts);
 
 router.delete("/:Id/delete", recipeMiddleware, deletePost);
 

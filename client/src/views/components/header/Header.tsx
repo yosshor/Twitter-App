@@ -23,7 +23,7 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
   const handleRegister = () => {
     console.log('User registering...');
   };
-  console.log('isActive:', isActive); // Logs isActive prop
+  //console.log('isActive:', isActive); // Logs isActive prop
   const activeClass = isActive ? 'active-link' : 'inactive-link';
   const header = <div>
     <header className='header'>

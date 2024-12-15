@@ -12,9 +12,7 @@ const useCurrentUser = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        console.log("Fetching user data...", state.url); // Logs fetching user data
         const user = await getCurrentUser(state.url);
-        console.log("Fetched user data:", user); // Logs fetched user data
         setUserData(user ?? null);
       } catch (error) {
         console.error("Error fetching user data:", error);

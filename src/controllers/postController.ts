@@ -1,5 +1,7 @@
 import { Comment } from "../models/Comment";
 import { Post } from "../models/Post";
+import { Following } from "../models/following";
+import { Request, Response } from 'express';
 import { Like } from "../models/Like";
 import User from "../models/User";
 import jwt from "jwt-simple";
@@ -232,10 +234,32 @@ export const getUserPosts = async (req: any, res: any) => {
     }
 
     const posts = await Post.find({ userId }).sort({ createdAt: -1 });
-    console.log(userId);
+ 
     res.status(200).json({ posts });
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ error: "Failed to fetch posts" });
+  }
+};
+export async function getPosts(req: any, res: any) {
+  try {
+      
+      const { userId } = req.body;
+    
+     
+      const following = await Following.findOne({ userId: userId }).populate('followingList', 'username');
+
+      if (!following) {
+          return res.status(200).json({ posts: [] }); 
+      }
+
+    
+      const followedUserIds = following.followingList.map(user => user._id);
+      const posts = await Post.find({ userId: { $in: followedUserIds } }).populate('content', 'image').sort({ createdAt: -1 });
+
+      res.status(200).json({ posts });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to fetch posts' });
   }
 };

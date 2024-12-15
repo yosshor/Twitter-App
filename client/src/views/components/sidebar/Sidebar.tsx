@@ -17,7 +17,7 @@ const Sidebar: FC<SidebarProps> = ({ userData }) => {
   const handleHome = () => console.log('Navigating to Home...');
   const handlePost = () => console.log('Navigating to Post page...');
   const imageUrl = `${state.url}/${userData.profileImage}`;
-  console.log(imageUrl);
+ // console.log(imageUrl);
   return (
     <div className="sidebar">
       <div className="sidebar__profile">
