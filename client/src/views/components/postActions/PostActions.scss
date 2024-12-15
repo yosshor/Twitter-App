@@ -1,0 +1,29 @@
+.post-actions {
+    display: flex;
+    gap: 10px;
+
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 10px;
+        .fa-heart, .fa-comment, .fa-share {
+            padding-top: 5px;
+            color: rgb(165, 163, 163);
+            height: 2vh;
+        }
+        &:hover {
+            opacity: 0.8;
+        }
+
+        &.liked {
+            .fa-heart {
+                color: red;
+            }
+        }
+    }
+}
