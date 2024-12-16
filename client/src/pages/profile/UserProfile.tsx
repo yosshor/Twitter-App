@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import './UserProfile.scss';
 import { productionState } from "../../../src/pages/home/HomePage";
@@ -9,8 +9,12 @@ import Post from "../../views/components/post/Post";
 import { PostType } from "../../views/components/post/Post";
 
 
+interface UserProfileProps {
+    userId: string;
+}
 
-const UserProfile = () => {
+
+const UserProfile: FC<UserProfileProps> = (userId?) => {
     const { userData, loading } = useCurrentUser();
     const state = useContext(productionState);
     const [posts, setPosts] = useState<PostType[]>([]);
@@ -42,6 +46,7 @@ const UserProfile = () => {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
+                        ...(userId && { UserId: `${userId}` }),
                     },
                 });
 

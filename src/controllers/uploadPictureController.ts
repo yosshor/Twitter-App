@@ -48,8 +48,10 @@ export function getUserIdAndData(req: any): {
   try {
     console.log("request body:", req.body);
     const token = req.header("Authorization")?.replace("Bearer ", "");
+    const searchUserId = req.header("UserId");
+
     const { userToken } = req.body;
-    console.log("token on request header:", token, userToken);
+    console.log("token on request header:", token, userToken, 'searchUserId:', searchUserId);
     const secret = process.env.SECRET!;
 
   // Try decoding without verifying first

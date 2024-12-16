@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import './Header.scss'
-import { FC } from 'react';
-import { faRightFromBracket, faRightToBracket, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { FC, useState } from 'react';
+import { faRightFromBracket, faRightToBracket, faSearch, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import ActionButton from '../buttons/Buttons';
 
 
@@ -12,6 +12,7 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ isActive }) => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const handleLogOut = () => {
     console.log('User logged out!');
@@ -28,6 +29,12 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
     console.log('User registering...');
   };
   console.log('isActive:', isActive); // Logs isActive prop
+  const handleSearch = () => {
+    console.log(`Searching for: ${searchQuery}`);
+    document.cookie = `search=${searchQuery}; path=/`;
+    navigate("search");
+
+  };
   const activeClass = isActive ? 'active-link' : 'inactive-link';
   const header = <div>
     <header className='header'>
@@ -36,7 +43,7 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
           <img src='https://seeklogo.com/images/T/twitter-icon-square-logo-108D17D373-seeklogo.com.png' alt='Twitter logo' />
           <h2 className='title'>Twitter</h2>
         </div>
-  
+
       </div>
       {isActive === false ? <div className='user-actions'>
         <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
@@ -54,13 +61,31 @@ const Header: FC<HeaderProps> = ({ isActive }) => {
           </Link>
         </div>
       </div> :
-        <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
-          <Link to="/" className={activeClass}>
-            <button className='button'>
-              <ActionButton icon={faRightFromBracket} label="Logout" onClick={handleLogOut} />
+        <div className="user-actions-logged-in">
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search User..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                padding: '10px', width: '12vw', top: '10px',
+                position: 'absolute', borderRadius: '20px', border: 'none',
+              }}
+            />
+            <button className="search-button" >
+              <ActionButton icon={faSearch} label="Search" onClick={handleSearch} />
             </button>
-          </Link>
+          </div>
+          <div style={{ display: 'flex', gap: '20px', padding: '20px',paddingLeft:'20px' }}>
+            <Link to="/" className={activeClass}>
+              <button className='button'>
+                <ActionButton icon={faRightFromBracket} label="Logout" onClick={handleLogOut} />
+              </button>
+            </Link>
+          </div>
         </div>
+
       }
     </header>
   </div>

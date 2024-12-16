@@ -52,13 +52,15 @@ export const getAllPosts = async (req: Request, res: any) => {
     // Populate the user field to get all user information
     // Populate the userId field to get user information (only fullName and email)
 
-    const posts = await Post.find().populate({
-      path: "userId", // Populate the userId field
-      select: "fullName email createdAt profileImage",
-    }).populate({
-      path: "likes", // Populate the likes field
-      select: "userId createdAt", // Adjust the fields you want to select from the likes table
-    });
+    const posts = await Post.find()
+      .populate({
+        path: "userId", // Populate the userId field
+        select: "fullName email createdAt profileImage",
+      })
+      .populate({
+        path: "likes", // Populate the likes field
+        select: "userId createdAt", // Adjust the fields you want to select from the likes table
+      });
 
     res.status(200).json({ posts: posts }); // Send posts if successful
   } catch (error) {
@@ -165,8 +167,6 @@ export const searchPostsCategory = async (
   }
 };
 
-
-
 export const likePost = async (req: any, res: any): Promise<void> => {
   try {
     const { userId } = getUserIdAndData(req);
@@ -184,7 +184,9 @@ export const likePost = async (req: any, res: any): Promise<void> => {
 
     if (searchLike) {
       await Like.deleteOne({ _id: searchLike._id });
-      post.likes = post.likes.filter((likeId: any) => !likeId.equals(searchLike._id));
+      post.likes = post.likes.filter(
+        (likeId: any) => !likeId.equals(searchLike._id)
+      );
       await post.save();
       console.log("Removed like", searchLike);
       return res.status(200).json({ message: "Like removed" });
@@ -205,8 +207,6 @@ export const likePost = async (req: any, res: any): Promise<void> => {
     res.status(500).json({ error: "Failed to like post" });
   }
 };
-
-
 
 export const addComment = async (req: any, res: any): Promise<void> => {
   try {
@@ -241,15 +241,45 @@ export const getUserPosts = async (req: any, res: any) => {
       return res.status(400).json({ error: "User ID is required" });
     }
 
-    const posts = await Post.find({ userId }).populate({
-      path: "userId", // Populate the userId field
-      select: "fullName email createdAt profileImage",
-    }).populate({
-      path: "likes", // Populate the likes field
-      select: "userId createdAt", // Adjust the fields you want to select from the likes table
-    }).sort({ createdAt: -1 });
+    const posts = await Post.find({ userId })
+      .populate({
+        path: "userId", // Populate the userId field
+        select: "fullName email createdAt profileImage",
+      })
+      .populate({
+        path: "likes", // Populate the likes field
+        select: "userId createdAt", // Adjust the fields you want to select from the likes table
+      })
+      .sort({ createdAt: -1 });
 
     res.status(200).json({ posts });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+};
+
+export const getPostDetails = async (req: any, res: any) => {
+  try {
+    const postId = req.params.id;
+    console.log("postId:", postId);
+
+    if (!postId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const post = await Post.find({ _id: postId })
+      .populate({
+        path: "userId", // Populate the userId field
+        select: "fullName email createdAt profileImage",
+      })
+      .populate({
+        path: "likes", // Populate the likes field
+        select: "userId createdAt", // Adjust the fields you want to select from the likes table
+      })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ post });
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ error: "Failed to fetch posts" });

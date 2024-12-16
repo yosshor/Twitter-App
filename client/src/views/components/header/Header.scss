@@ -23,17 +23,20 @@
         justify-content: center;
 
         .logo {
-            h2{
+            h2 {
                 margin: 0;
                 padding: 0;
             }
+
             font-size: 2rem;
             display: flex;
             justify-content: flex-start;
+
             img {
                 width: 2rem;
                 height: 2rem;
             }
+
             .title {
                 font-size: 1.5rem;
                 align-items: center;
@@ -71,4 +74,31 @@
     font-weight: bold;
     // color: #db1630;
     /* Active link color */
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    padding-right: '40px';
+    width: 100%;    
+
+}
+
+.search-button {
+    background-color: #00acee;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    list-style: none;
+    width: 6vw;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    height: max-content;
+    position: relative;
+    top: 10px;
 }

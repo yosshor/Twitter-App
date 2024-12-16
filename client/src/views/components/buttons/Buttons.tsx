@@ -12,7 +12,7 @@ interface ActionButtonProps {
 
 const ActionButton:FC<ActionButtonProps> = ({ icon, label, onClick }) => {
     return (
-        <button
+        <button 
             onClick={onClick}
             className={`button button__${label.toLocaleLowerCase()}`}
             style={{

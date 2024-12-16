@@ -10,7 +10,8 @@ import {
   updatePost,
   searchPostsCategory,
   likePost,
-  getUserPosts
+  getUserPosts,
+  getPostDetails
 } from "../controllers/postController";
 import multer from "multer";
 
@@ -35,6 +36,7 @@ router.get("/search", twitterMiddleware, searchPost);
 router.get("/search-post", twitterMiddleware, searchPostsCategory);
 router.get("/get-user-posts", twitterMiddleware, getUserPosts);
 router.delete("/:Id/delete", twitterMiddleware, deletePost);
+router.get('/get-user-details/:id', getPostDetails);
 
 // module.exports = router;
 export default router;

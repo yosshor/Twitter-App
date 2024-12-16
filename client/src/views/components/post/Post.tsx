@@ -37,7 +37,50 @@ const Post: FC<PostType> = (postData) => {
     }
   }
 
+  const handleShowUserProfile = async (userId: string) => {
+    try {
 
+      const response = await fetch(`${state.url}/api/post/get-user-details/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // body: JSON.stringify({ 'userId': userId }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('data:', data);
+        return data;
+      } else {
+        console.error("Error getting user data");
+      }
+    } catch (error) {
+      console.error("Error getting user data:", error);
+    }
+  }
+  const handleShowPost = async (e: any) => {
+    const postId = e.target.id;
+    console.log('postId:', postId);
+    try {
+      const response = await fetch(`${state.url}/api/post/${postId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('data:', data);
+        return data;
+      } else {
+        console.error("Error getting post data");
+      }
+    } catch (error) {
+      console.error("Error getting post data:", error);
+    }
+  }
+
+  
   const handleLike = () => {
     setLikesCount(likesCount + 1);
   };
@@ -51,7 +94,7 @@ const Post: FC<PostType> = (postData) => {
   };
 
   if (postData.userId) {
-     checkIfUserLikeThisPost(postData.likes);
+    checkIfUserLikeThisPost(postData.likes);
 
     const userHandle = postData.userId.fullName
       .split(" ")
@@ -68,12 +111,12 @@ const Post: FC<PostType> = (postData) => {
     }
     return (
       <div className="post">
-        <div className='post-user-header'>
+        <div onClick={() => handleShowUserProfile(postData.userId._id)} className='post-user-header' id={postData.userId._id} >
           {profileImage && <img src={profileImage} alt="Post" className="user-image" />}
           <h3>{postData.userId.fullName && ''} @{userHandle}</h3>
           <p>{formatDistanceToNow(new Date(postData.createdAt), { addSuffix: true })}</p>
         </div>
-        <div className="post-details" id={postData._id}>
+        <div  onClick={handleShowPost}  className="post-details" id={postData._id}>
           <p>{postData.content}</p>
           {postData.image && <img src={imageUrl} alt="Post" className="post__image" />}
         </div>

@@ -18,5 +18,9 @@
         left: 30vw;
         background-color: #ff0000;
     }
-
+    &__search {
+        position: absolute;
+        right: -200%;
+        top: 20px;
+    }
 }
