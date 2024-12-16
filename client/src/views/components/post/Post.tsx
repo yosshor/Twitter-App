@@ -58,11 +58,11 @@ const Post: FC<PostType> = (postData) => {
       console.error("Error getting user data:", error);
     }
   }
-  const handleShowPost = async (e: any) => {
-    const postId = e.target.id;
+  const handleShowPost = async (e: React.MouseEvent<HTMLDivElement>) => {
+    const postId = e.currentTarget.id;
     console.log('postId:', postId);
     try {
-      const response = await fetch(`${state.url}/api/post/${postId}`, {
+      const response = await fetch(`${state.url}/api/post/get-user-details/${postId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -111,8 +111,8 @@ const Post: FC<PostType> = (postData) => {
     }
     return (
       <div className="post">
-        <div onClick={() => handleShowUserProfile(postData.userId._id)} className='post-user-header' id={postData.userId._id} >
-          {profileImage && <img src={profileImage} alt="Post" className="user-image" />}
+        <div onClick={handleShowPost} className='post-user-header' id={postData._id}>
+        {profileImage && <img src={profileImage} alt="Post" className="user-image" />}
           <h3>{postData.userId.fullName && ''} @{userHandle}</h3>
           <p>{formatDistanceToNow(new Date(postData.createdAt), { addSuffix: true })}</p>
         </div>
