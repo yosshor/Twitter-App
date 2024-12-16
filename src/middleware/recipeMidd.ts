@@ -8,7 +8,7 @@ import { getUserIdAndData } from "../controllers/uploadPictureController";
 export function recipeMiddleware(req: any, res: Response, next: NextFunction) {
     try {
       const { userData } = getUserIdAndData(req);
-    
+  
       if (!userData) {
         res.status(401).send({ error: "User not found" });
         return;
@@ -25,6 +25,7 @@ export function recipeMiddleware(req: any, res: Response, next: NextFunction) {
         res.status(401).send({ error: "User not found" });
         return;
       }
+    
       req.userId = userId;
       next();
     } catch (error) {

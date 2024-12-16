@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react';
-import './Search.scss'; // Create this SCSS file for styling
+import './Search.scss'; 
 import UserCard from '../../views/components/user/UserCard';
 
 const Search: React.FC = () => {
@@ -46,16 +46,17 @@ const Search: React.FC = () => {
         .split('; ')
         .find((row) => row.startsWith('userTwitter='))
         ?.split('=')[1];
-
-      const response = await fetch('http://localhost:3000/api/user/follow', {
+        console.log(userId);
+      const response = await fetch('http://localhost:3000/api/users/follow-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId }),
+        
+        body: JSON.stringify({ userId} ),
       });
-
+      console.log(response);
       if (response.ok) {
         console.log(`You followed user with ID: ${userId}`);
       } else {

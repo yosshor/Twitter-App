@@ -1,11 +1,11 @@
 import React from 'react';
-import './UserCard.scss'; // Create this SCSS file for styling
+import './UserCard.scss'; 
 
 interface UserCardProps {
   user: {
     fullName: string;
-    profileImage: string; // URL to the user's image
-    _id: string;   // User's ID
+    profileImage: string; 
+    _id: string;   
   };
   onFollow: (userId: string) => void;
 }
