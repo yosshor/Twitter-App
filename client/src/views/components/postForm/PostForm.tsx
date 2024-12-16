@@ -98,7 +98,7 @@ const PostForm: FC<PostFormProps> = () => {
                 className="postForm__textarea"
             />
             <div className="postForm__actions">
-                <input type="file" name='image' onChange={handleFileChange} />
+                <input type="file" name='image' className="upload-button" onChange={handleFileChange} />
                 <button onClick={handlePostSubmit} className="postForm__button">
                     Post
                 </button>

@@ -15,6 +15,13 @@ const UserProfile = () => {
     const state = useContext(productionState);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [isFollowing, setIsFollowing] = useState(false);
+
+
+    const handleFollow = () => {
+        setIsFollowing(!isFollowing);
+        // Add logic to follow/unfollow the user in the backend
+    };
 
     useEffect(() => {
         const fetchUserPosts = async () => {
@@ -30,7 +37,7 @@ const UserProfile = () => {
                     throw new Error("No token found in cookies");
                 }
 
-                const response = await fetch(`${state.url}/api/post/get-user-posts`, { 
+                const response = await fetch(`${state.url}/api/post/get-user-posts`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -69,55 +76,73 @@ const UserProfile = () => {
 
     return (
         <>
-            <div className="user-profile-wrapper">
-                <div style={{ width: "100%", height: "250px" }}></div>
-                <div className="user-profile-header">
-                    <img
-                        src={imageUrl}
-                        alt="User Profile"
-                        className="user-profile-image"
-                        style={{
-                            width: "150px",
-                            height: "150px",
-                            borderRadius: "50%",
-                            border: "2px solid #333",
-                            margin: "0 auto",
-                            display: "block",
-                            position: "absolute",
-                            top: "17vh",
-                        }}
-                    />
-                    <div style={{ height: "max-content" }}>
-                        <h1 style={{ marginBottom: '0px' }}>{userData.fullName}</h1>
-                        <p style={{ margin: '0px' }}>@{userHandle}</p>
-                        <div style={{ marginTop: '20px' }} className="joined-date">
-                            <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
-                            <span>Joined: {joinedDate}</span>
+            <div className="user-profile-wrapper" style={{ height: 'max-content' }}>
+                <div className="header-wrapper">
+
+                    <div style={{ width: "100%", height: "250px" }}></div>
+                    <div className="user-profile-header" >
+                        <img
+                            src={imageUrl}
+                            alt="User Profile"
+                            className="user-profile-image"
+                            style={{
+                                width: "150px",
+                                height: "150px",
+                                borderRadius: "50%",
+                                border: "2px solid #333",
+                                margin: "0 auto",
+                                display: "block",
+                                position: "absolute",
+                                top: "120px",
+                            }}
+                        />
+                        <div style={{ height: "max-content" }}>
+                            <h1 style={{ marginBottom: '0px' }}>{userData.fullName}</h1>
+                            <p style={{ margin: '0px' }}>@{userHandle}</p>
+                            <div style={{ marginTop: '20px' }} className="joined-date">
+                                <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+                                <span>Joined: {joinedDate}</span>
+                            </div>
+                            <div className="followers-wrapper">
+                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <p>0</p>
+                                    <p>Followers</p>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <p>0</p>
+                                    <p>Following</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="followers-wrapper">
+                        <div className="follow-section">
+
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                <p>0</p>
-                                <p>Followers</p>
+                                <button onClick={handleFollow} className="follow-button">
+                                    {isFollowing ? 'Unfollow' : 'Follow'}
+                                </button>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                <p>0</p>
-                                <p>Following</p>
-                            </div>
+                            <p>{userData.email}</p>
                         </div>
                     </div>
-                    <p>Email: {userData.email}</p>
+
                 </div>
-            </div>
-            <div className="user-posts-container">
-                {error ? (
-                    <p className="error-message">{error}</p>
-                ) : posts.length === 0 ? (
-                    <p>No posts found for this user.</p>
-                ) : (
-                    posts.map((post, index) => (
-                        <Post key={index} {...post} />
-                    ))
-                )}
+
+
+
+                <div className="user-posts-container" style={{
+                    width: '80%', alignItems: 'center', paddingLeft: '10%',
+                    paddingTop: '10px', backgroundColor: 'white', paddingRight: '12%'
+                }}>
+                    {error ? (
+                        <p className="error-message">{error}</p>
+                    ) : posts.length === 0 ? (
+                        <p>No posts found for this user.</p>
+                    ) : (
+                        posts.map((post, index) => (
+                            <Post key={index} {...post} />
+                        ))
+                    )}
+                </div>
             </div>
             {/* <TwitterReplies /> */}
             {/* <TwitterReplies /> */}

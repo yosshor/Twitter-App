@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import './Post.scss';
 import { productionState } from "../../../pages/home/HomePage";
 import { formatDistanceToNow } from 'date-fns';
@@ -24,8 +24,19 @@ export interface PostType {
 
 const Post: FC<PostType> = (postData) => {
   const state = useContext(productionState);
-  const [likesCount, setLikesCount] = useState(postData.likes.length); 
-  const [commentsCount, setCommentsCount] = useState(0); 
+  const [likesCount, setLikesCount] = useState(postData.likes.length);
+  const [commentsCount, setCommentsCount] = useState(0);
+  const [liked, setLiked] = useState(false);
+
+  const checkIfUserLikeThisPost = async (postDataLikes: any) => {
+    if (postDataLikes.length > 0) {
+      const userLiked = await postData.likes.findIndex((like: any) => like.userId === postData.userId._id);
+      if (userLiked > -1) {
+        setLiked(true);
+      }
+    }
+  }
+
 
   const handleLike = () => {
     setLikesCount(likesCount + 1);
@@ -38,7 +49,9 @@ const Post: FC<PostType> = (postData) => {
   const handleShare = () => {
     // Add logic to share the post
   };
+
   if (postData.userId) {
+     checkIfUserLikeThisPost(postData.likes);
 
     const userHandle = postData.userId.fullName
       .split(" ")
@@ -71,6 +84,7 @@ const Post: FC<PostType> = (postData) => {
           likesCount={likesCount}
           commentsCount={commentsCount}
           id={postData._id}
+          userLiked={liked}
 
         />
       </div>

@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
 import './PostActions.scss';
 import { productionState } from "../../../pages/home/HomePage";
-import { set } from 'mongoose';
 
 interface PostActionsProps {
     onLike: () => void;
@@ -12,11 +11,12 @@ interface PostActionsProps {
     likesCount: number;
     commentsCount: number;
     id: string,
+    userLiked: boolean;
     // likeCount: number;
     // setLikesCount: () => void;
 }
 
-const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, likesCount, commentsCount, id }) => {
+const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, likesCount, commentsCount, id, userLiked }) => {
     const [liked, setLiked] = useState(false);
     const state = useContext(productionState);
     const [likes, setLikesCount] = useState(likesCount);
@@ -39,8 +39,7 @@ const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, l
                 const data = await response.json();
                 if (data.message === "Like removed") {
                     setLikesCount(likes > 0 ? likes - 1 : 0);
-                    console.log("Post unliked successfully");
-
+                    console.log("Post unlike successfully");
                 }
                 else {
                     setLikesCount(likes + 1);
@@ -61,10 +60,9 @@ const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, l
         likePost(postId);
         onLike();
     };
-
     return (
         <div className="post-actions">
-            <button onClick={() => handleLike(id)} className={liked ? 'liked' : ''}>
+            <button onClick={() => handleLike(id)} className={liked || userLiked ? 'liked' : ''}>
                 <FontAwesomeIcon icon={faHeart} /> {likes}
             </button>
             <button onClick={onComment}>
