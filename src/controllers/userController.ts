@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import  User  from "../models/User"; 
-import { Following  } from "../models/following";
+import { Following  } from "../models/Following";
 import { Types } from "mongoose";
 
 
@@ -32,25 +32,25 @@ export const findUsersByUsername = async (req: Request, res: Response): Promise<
 };
 export const followUser = async (req: any, res: any) => {
   try {
-    const  userIdToFollow  = req.body.userId; 
-    const  userId  = req.userId; 
+    const userIdToFollow = req.body.userId; 
+    const userId = req.userId; 
+  
   
     if (!userIdToFollow || !Types.ObjectId.isValid(userIdToFollow)) {
       return res.status(400).json({ message: "Invalid or missing user ID" });
     }
 
- 
     if (userId === userIdToFollow) {
-      return res.status(400).json({ message: "You cannot follow yourself" });
+      return res.status(400).json({ message: "You cannot follow/unfollow yourself" });
     }
 
-
+   
     const userToFollow = await User.findById(userIdToFollow);
     if (!userToFollow) {
-      return res.status(404).json({ message: "User to follow not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    
+  
     let following = await Following.findOne({ userId });
     if (!following) {
       following = new Following({
@@ -59,24 +59,61 @@ export const followUser = async (req: any, res: any) => {
       });
     }
 
-    
+   
     const isAlreadyFollowing = following.followingList.some(
       (id) => id.toString() === userIdToFollow
     );
 
     if (isAlreadyFollowing) {
-      return res.status(400).json({ message: "You are already following this user" });
+     
+      following.followingList = following.followingList.filter(
+        (id) => id.toString() !== userIdToFollow
+      );
+
+      await following.save();
+      return res.status(200).json({
+        message: `You have unfollowed ${userToFollow.fullName}`,
+      });
+    } else {
+      
+      following.followingList.push(userIdToFollow);
+
+      await following.save();
+      return res.status(200).json({
+        message: `You are now following ${userToFollow.fullName}`,
+      });
+    }
+  } catch (error) {
+    console.error("Error in followUser:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+export const getFollowingCount = async (req: any, res: any): Promise<void> => {
+  try {
+    const { userId } = req.body;
+
+    console.log(userId,"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+    if (!userId || !Types.ObjectId.isValid(userId)) {
+      res.status(400).json({ message: "Invalid or missing user ID" });
+      return;
     }
 
 
-    following.followingList.push(userIdToFollow);
+    const following = await Following.findOne({ userId });
 
+    if (!following) {
    
-    await following.save();
+      res.status(200).json({ followingCount: 0 });
+      return;
+    }
 
-    res.status(200).json({ message: `You are now following ${userToFollow.fullName}` });
+    const followingCount = following.followingList.length;
+    res.status(200).json({ followingCount });
   } catch (error) {
-    console.error("Error in followUser:", error);
+    console.error("Error in getFollowingCount:", error);
     res.status(500).json({
       message: "Internal server error",
       error: error instanceof Error ? error.message : error,

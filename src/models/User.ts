@@ -53,5 +53,5 @@ export interface userDetails {
   isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
-  id: string;
+  _id: string;
 }

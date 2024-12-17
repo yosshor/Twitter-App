@@ -7,7 +7,7 @@ import { getUserPosts } from "../controllers/postController";
 import twitterMiddleware from "../middleware/twitterMidd";
 
 
-import { findUsersByUsername, followUser } from "../controllers/userController";
+import { findUsersByUsername, followUser, getFollowingCount } from "../controllers/userController";
 
 
 const router = express.Router();
@@ -17,5 +17,5 @@ router.get("/get-current-user", getCurrentUser);
 
 router.post("/find-users-by-username", findUsersByUsername);
 router.post("/follow-user", twitterMiddleware, followUser);
-
+router.post("/following-count",getFollowingCount );
 export default router;

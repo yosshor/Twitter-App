@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TwitterReplies from "../../views/components/replies/Replies";
 import Post from "../../views/components/post/Post";
 import { PostType } from "../../views/components/post/Post";
+import { stringify } from "querystring";
 
 
 interface UserProfileProps {
@@ -20,6 +21,8 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
     const [posts, setPosts] = useState<PostType[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [followers, setFollowers] = useState<number>(0); 
+    const [following, setFollowing] = useState<number>(0);
 
 
     const handleFollow = () => {
@@ -68,6 +71,44 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
 
         fetchUserPosts();
     }, [userData, state.url]);
+    useEffect(() => {
+        const fetchFollowingCount = async () => {
+          try {
+            if (!userData) return;
+      
+            const token = document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("userTwitter="))
+              ?.split("=")[1];
+      
+            if (!token) {
+              throw new Error("No token found in cookies");
+            }
+            console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",userData._id);
+          
+            const response = await fetch(`${state.url}/api/users/following-count`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ userId: userData._id }), 
+            });
+      
+            if (!response.ok) {
+              throw new Error("Failed to fetch following count");
+            }
+      
+            const data = await response.json();
+            setFollowing(data.followingCount || 0);
+          } catch (err) {
+            console.error("Error in fetchFollowingCount:", err);
+          }
+        };
+      
+        fetchFollowingCount();
+      }, [state.url, userId,userData]);
+      
 
     if (loading) return <div>Loading...</div>;
     if (!userData) return <div>No user data available.</div>;
@@ -114,7 +155,7 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
                                     <p>Followers</p>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <p>0</p>
+                                    <p>{following}</p>
                                     <p>Following</p>
                                 </div>
                             </div>
