@@ -4,17 +4,15 @@ import type { userDetails } from "../../../src/models/User";
 import { productionState } from "../pages/home/HomePage";
 import { useContext } from "react";
 
-const useCurrentUser = () => {
+const useCurrentUser = ({ userId }: { userId?: string } = {}) => {
   const [userData, setUserData] = useState<userDetails | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const state = useContext(productionState);
-
+  console.log("userId:", userId);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        console.log("Fetching user data...", state.url); // Logs fetching user data
-        const user = await getCurrentUser(state.url);
-        console.log("Fetched user data:", user); // Logs fetched user data
+        const user = await getCurrentUser(state.url, userId ?? undefined);
         setUserData(user ?? null);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -25,7 +23,7 @@ const useCurrentUser = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [userId, state.url]); 
 
   return { userData, loading };
 };

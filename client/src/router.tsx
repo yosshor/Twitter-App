@@ -4,11 +4,12 @@ import ErrorPage from './views/components/errorPage/ErrorPage';
 import Login from './views/components/login/Login';
 import Register from './views/components/register/Register';
 import { lazy, Suspense } from 'react';
-import UserProfile from './pages/profile/UserProfile';
+// import UserProfile from './pages/profile/UserProfile';
 import Layout from '../src/views/components/layout/Layout'; 
 
 const Home = lazy(() => import('../../client/src/pages/home/HomePage'));
 const Search = lazy(() => import('../../client/src/pages/search/Search'));
+const UserProfile = lazy(() => import('./pages/profile/UserProfile'));
 
 
 export const router = createBrowserRouter([
@@ -44,8 +45,16 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "profile", // Relative path for profile (matches "/home/profile")
-        element: <UserProfile userId={''} />,
+        path: "profile", 
+        element: <UserProfile  userId=''/>,
+      },
+      {
+        path: "profile/:id", // Dynamic path for profile with user ID
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <UserProfile />
+          </Suspense>
+        ),
       },
       {
         path: "posts", // Example for posts route (matches "/home/posts")

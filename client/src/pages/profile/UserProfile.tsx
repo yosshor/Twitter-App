@@ -14,9 +14,8 @@ interface UserProfileProps {
 }
 
 
-const UserProfile: FC<userDetails> = (userId?) => {
-    // const [userData, setUserData] = useState<userDetails>()// useContext(productionState);
-    // const [loading, setLoading] = useState<boolean>()// useContext(productionState);
+const UserProfile: FC<UserProfileProps> = ({ userId }) => {
+    console.log("userId:", userId);
     const { userData, loading } = useCurrentUser();
 
     const state = useContext(productionState);
@@ -62,7 +61,6 @@ const UserProfile: FC<userDetails> = (userId?) => {
                 }
 
                 const data = await response.json();
-                console.log(data.posts);
                 if (Array.isArray(data.posts)) {
                     setPosts(data.posts);
                 } else {
@@ -74,7 +72,6 @@ const UserProfile: FC<userDetails> = (userId?) => {
         };
 
         fetchUserPosts();
-        console.log("User Data start useeffect", userData);
         if (!userData || Object.values(userData).length === 0) return;
         else {
             setFollowers(userData.followerDetails.length || 0);
@@ -87,7 +84,6 @@ const UserProfile: FC<userDetails> = (userId?) => {
 
     const imageUrl = `${state.url}/${userData.profileImage}`;
     const joinedDate = new Date(userData.createdAt).toDateString();
-    console.log("userdat", userData)
     const userHandle = !userData.fullName === undefined ? userData.fullName
         .split(" ")
         .map((part) => part.toLowerCase().trim())

@@ -11,9 +11,12 @@ export const userTwitterCookie = document.cookie
   .find((row) => row.startsWith("userTwitter="))
   ?.split("=")[1];
 
-const devState = { mode: 'developer', url: 'http://localhost:3000', 
-                  userTwitterCookie: userTwitterCookie };
+const devState = {
+  mode: 'developer', url: 'http://localhost:3000',
+  userTwitterCookie: userTwitterCookie
+};
 export const productionState = createContext(devState);
+export const userToken = createContext({ tokenTwitterUser: userTwitterCookie });
 
 const Home = () => {
   // const [posts, setPosts] = useState<any[]>([]);
@@ -25,9 +28,6 @@ const Home = () => {
     const fetchUserPosts = async () => {
       try {
         if (!userData) return;
-
-
-
         if (!userTwitterCookie) {
           throw new Error("No token found in cookies");
         }

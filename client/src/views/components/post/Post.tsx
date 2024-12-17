@@ -3,6 +3,7 @@ import './Post.scss';
 import { productionState } from "../../../pages/home/HomePage";
 import { formatDistanceToNow } from 'date-fns';
 import PostActions from '../postActions/PostActions';
+import { useNavigate } from 'react-router-dom';
 
 export interface PostType {
   content: string;
@@ -20,13 +21,24 @@ export interface PostType {
   };
 }
 
+
+
+
 const Post: FC<{ postData?: PostType }> = ({ postData }) => {
-  console.log("Post Data", postData);
   const state = useContext(productionState);
   const [likesCount, setLikesCount] = useState(postData?.likesDetails?.length || 0);
   const [commentsCount, setCommentsCount] = useState(0);
   const [liked, setLiked] = useState(false);
+  const navigate = useNavigate();
 
+  const handleUserClick = (e: any) => {
+    const userId = e.currentTarget.id;
+    console.log("user clicked", userId);
+    navigate(`profile/${userId}`);
+  }
+  const handlePostClick = (e: any) => {
+    console.log("Post clicked", e.target.id);
+  }
   useEffect(() => {
     if (postData && postData.likesDetails && postData.userDetails?._id) {
       const userLiked = postData.likesDetails.findIndex((like: any) => like.userDetails === postData.userDetails._id);
@@ -63,12 +75,12 @@ const Post: FC<{ postData?: PostType }> = ({ postData }) => {
   }
   return (
     <div className="post">
-      <div className="post-user-header" id={postData!._id}>
+      <div onClick={handleUserClick} className="post-user-header" id={postData!.userDetails._id}>
         <img src={profileImage} alt="User" className="user-image" />
         <h3>{postData!.userDetails.fullName} @{userHandle}</h3>
         <p>{timeAgo}</p>
       </div>
-      <div className="post-details" id={postData!._id}>
+      <div onClick={handlePostClick} className="post-details" id={postData!._id}>
         <p>{postData!.content}</p>
         {postData.image && <img src={imageUrl} alt="Post" className="post__image" />}
 

@@ -75,13 +75,14 @@ export const getAllPosts = async (req: Request, res: any) => {
           'userDetails.email': 1,
           'userDetails.createdAt': 1,
           'userDetails.profileImage': 1,
+          'userDetails._id': 1,
           'likesDetails.userId': 1,
           'likesDetails.createdAt': 1,
           followersCount: 1,
           content: 1,
           profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails
           image: 1, // Include the post image
-          createdAt: 1
+          createdAt: 1,
         }
       },
       { $sort: { createdAt: -1 } }

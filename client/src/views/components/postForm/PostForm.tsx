@@ -1,4 +1,4 @@
-import { useContext, FC, useState } from "react";
+import { useContext, FC, useState, useRef } from "react";
 import './PostForm.scss';
 import { productionState } from "../../../pages/home/HomePage";
 
@@ -27,19 +27,21 @@ async function addPostImage(image: File, token: string, postId: string, url: str
     });
 
     if (imageResponse.ok) {
+        const response = await imageResponse.json();
         console.log("Image uploaded successfully");
+        return response;
     } else {
         console.error("Image upload failed", imageResponse);
     }
 }
 
-const PostForm: FC<PostFormProps> = () => {
+const PostForm: FC<PostFormProps> = ({ addPost }) => {
     const [content, setContent] = useState('');
     const [image, setImage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const state = useContext(productionState);
-
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -72,12 +74,20 @@ const PostForm: FC<PostFormProps> = () => {
 
                     //upload the image separately after post creation
                     if (selectedFile) {
-                        await addPostImage(selectedFile, token, postId, state.url);
+                        const res = await addPostImage(selectedFile, token, postId, state.url);
+                        addPost(res);
+                        setSelectedFile(null);
+                    }
+                    else {
+                        addPost(postResponse);
                     }
                     // Clear form state
                     setContent("");
                     setSelectedFile(null);
                     setImage(null);
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = ""; // Clear the file input
+                    }
                     console.log("Post created successfully");
                 } else {
                     alert("Error creating post");
@@ -98,7 +108,12 @@ const PostForm: FC<PostFormProps> = () => {
                 className="postForm__textarea"
             />
             <div className="postForm__actions">
-                <input type="file" name='image' className="upload-button" onChange={handleFileChange} />
+                <input type="file"
+                    name='image'
+                    className="upload-button"
+                    onChange={handleFileChange}
+                    ref={fileInputRef} // Attach the ref to the file input
+                />
                 <button onClick={handlePostSubmit} className="postForm__button">
                     Post
                 </button>
