@@ -4,9 +4,9 @@ import './UserProfile.scss';
 import { productionState } from "../../../src/pages/home/HomePage";
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import TwitterReplies from "../../views/components/replies/Replies";
 import Post from "../../views/components/post/Post";
 import { PostType } from "../../views/components/post/Post";
+import type { userDetails } from "../../../../src/models/User";
 
 
 interface UserProfileProps {
@@ -14,28 +14,35 @@ interface UserProfileProps {
 }
 
 
-const UserProfile: FC<UserProfileProps> = (userId?) => {
+const UserProfile: FC<userDetails> = (userId?) => {
+    // const [userData, setUserData] = useState<userDetails>()// useContext(productionState);
+    // const [loading, setLoading] = useState<boolean>()// useContext(productionState);
     const { userData, loading } = useCurrentUser();
+
     const state = useContext(productionState);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
-
+    const [followers, setFollowers] = useState<number>(0);
+    const [following, setFollowing] = useState<number>(0);
 
     const handleFollow = () => {
         setIsFollowing(!isFollowing);
         // Add logic to follow/unfollow the user in the backend
     };
 
+    const getToken = () => document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("userTwitter="))
+        ?.split("=")[1];
+
     useEffect(() => {
+
+
         const fetchUserPosts = async () => {
             try {
                 if (!userData) return;
-
-                const token = document.cookie
-                    .split("; ")
-                    .find((row) => row.startsWith("userTwitter="))
-                    ?.split("=")[1];
+                const token = getToken();
 
                 if (!token) {
                     throw new Error("No token found in cookies");
@@ -55,7 +62,7 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
                 }
 
                 const data = await response.json();
-                console.log(data);
+                console.log(data.posts);
                 if (Array.isArray(data.posts)) {
                     setPosts(data.posts);
                 } else {
@@ -67,6 +74,12 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
         };
 
         fetchUserPosts();
+        console.log("User Data start useeffect", userData);
+        if (!userData || Object.values(userData).length === 0) return;
+        else {
+            setFollowers(userData.followerDetails.length || 0);
+            setFollowing(userData.followingDetails.length || 0);
+        }
     }, [userData, state.url]);
 
     if (loading) return <div>Loading...</div>;
@@ -74,10 +87,11 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
 
     const imageUrl = `${state.url}/${userData.profileImage}`;
     const joinedDate = new Date(userData.createdAt).toDateString();
-    const userHandle = userData.fullName
+    console.log("userdat", userData)
+    const userHandle = !userData.fullName === undefined ? userData.fullName
         .split(" ")
         .map((part) => part.toLowerCase().trim())
-        .join("");
+        .join("") : '';
 
     return (
         <>
@@ -110,11 +124,11 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
                             </div>
                             <div className="followers-wrapper">
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <p>0</p>
+                                    <p>{followers}</p>
                                     <p>Followers</p>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <p>0</p>
+                                    <p>{following}</p>
                                     <p>Following</p>
                                 </div>
                             </div>
@@ -144,7 +158,7 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
                         <p>No posts found for this user.</p>
                     ) : (
                         posts.map((post, index) => (
-                            <Post key={index} {...post} />
+                            <Post key={index} postData={post} />
                         ))
                     )}
                 </div>

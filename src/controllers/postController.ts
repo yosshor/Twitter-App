@@ -51,16 +51,42 @@ export const getAllPosts = async (req: Request, res: any) => {
   try {
     // Populate the user field to get all user information
     // Populate the userId field to get user information (only fullName and email)
-
-    const posts = await Post.find()
-      .populate({
-        path: "userId", // Populate the userId field
-        select: "fullName email createdAt profileImage",
-      })
-      .populate({
-        path: "likes", // Populate the likes field
-        select: "userId createdAt", // Adjust the fields you want to select from the likes table
-      });
+    const posts = await Post.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userDetails'
+        }
+      },
+      { $unwind: '$userDetails' },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'postId',
+          as: 'likesDetails'
+        }
+      },
+      {
+        $project: {
+          'userDetails.fullName': 1,
+          'userDetails.email': 1,
+          'userDetails.createdAt': 1,
+          'userDetails.profileImage': 1,
+          'likesDetails.userId': 1,
+          'likesDetails.createdAt': 1,
+          followersCount: 1,
+          content: 1,
+          profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails
+          image: 1, // Include the post image
+          createdAt: 1
+        }
+      },
+      { $sort: { createdAt: -1 } }
+    ]);
+    
 
     res.status(200).json({ posts: posts }); // Send posts if successful
   } catch (error) {
@@ -241,16 +267,43 @@ export const getUserPosts = async (req: any, res: any) => {
       return res.status(400).json({ error: "User ID is required" });
     }
 
-    const posts = await Post.find({ userId })
-      .populate({
-        path: "userId", // Populate the userId field
-        select: "fullName email createdAt profileImage",
-      })
-      .populate({
-        path: "likes", // Populate the likes field
-        select: "userId createdAt", // Adjust the fields you want to select from the likes table
-      })
-      .sort({ createdAt: -1 });
+    const posts = await Post.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userDetails'
+        }
+      },
+      { $unwind: '$userDetails' },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'postId',
+          as: 'likesDetails'
+        }
+      },
+      {
+        $project: {
+          'userDetails.fullName': 1,
+          'userDetails.email': 1,
+          'userDetails.createdAt': 1,
+          'userDetails.profileImage': 1,
+          'likesDetails.userId': 1,
+          'likesDetails.createdAt': 1,
+          followersCount: 1,
+          content: 1,
+          profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails
+          image: 1, // Include the post image
+          createdAt: 1
+        }
+      },
+      { $sort: { createdAt: -1 } }
+    ]);
+  
 
     res.status(200).json({ posts });
   } catch (error) {

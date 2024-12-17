@@ -1,9 +1,8 @@
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useState, useEffect } from 'react';
 import './Post.scss';
 import { productionState } from "../../../pages/home/HomePage";
 import { formatDistanceToNow } from 'date-fns';
 import PostActions from '../postActions/PostActions';
-
 
 export interface PostType {
   content: string;
@@ -11,8 +10,8 @@ export interface PostType {
   createdAt: string;
   updatedAt: string;
   _id: string;
-  likes: string[];
-  userId: {
+  likesDetails: string[];
+  userDetails: {
     fullName: string;
     email: string;
     createdAd: Date;
@@ -21,123 +20,72 @@ export interface PostType {
   };
 }
 
-
-const Post: FC<PostType> = (postData) => {
+const Post: FC<{ postData?: PostType }> = ({ postData }) => {
+  console.log("Post Data", postData);
   const state = useContext(productionState);
-  const [likesCount, setLikesCount] = useState(postData.likes.length);
+  const [likesCount, setLikesCount] = useState(postData?.likesDetails?.length || 0);
   const [commentsCount, setCommentsCount] = useState(0);
   const [liked, setLiked] = useState(false);
 
-  const checkIfUserLikeThisPost = async (postDataLikes: any) => {
-    if (postDataLikes.length > 0) {
-      const userLiked = await postData.likes.findIndex((like: any) => like.userId === postData.userId._id);
-      if (userLiked > -1) {
-        setLiked(true);
-      }
+  useEffect(() => {
+    if (postData && postData.likesDetails && postData.userDetails?._id) {
+      const userLiked = postData.likesDetails.findIndex((like: any) => like.userDetails === postData.userDetails._id);
+      if (userLiked > -1) setLiked(true);
     }
-  }
-
-  const handleShowUserProfile = async (userId: string) => {
-    try {
-
-      const response = await fetch(`${state.url}/api/post/get-user-details/${userId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // body: JSON.stringify({ 'userId': userId }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log('data:', data);
-        return data;
-      } else {
-        console.error("Error getting user data");
-      }
-    } catch (error) {
-      console.error("Error getting user data:", error);
+    else {
+      setLikesCount(0);
     }
-  }
-  const handleShowPost = async (e: React.MouseEvent<HTMLDivElement>) => {
-    const postId = e.currentTarget.id;
-    console.log('postId:', postId);
-    try {
-      const response = await fetch(`${state.url}/api/post/get-user-details/${postId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log('data:', data);
-        return data;
-      } else {
-        console.error("Error getting post data");
-      }
-    } catch (error) {
-      console.error("Error getting post data:", error);
-    }
-  }
+  }, [postData]);
 
-  
-  const handleLike = () => {
-    setLikesCount(likesCount + 1);
-  };
-
-  const handleComment = () => {
-    // Add logic to open comment section or redirect to comment page
-  };
-
-  const handleShare = () => {
-    // Add logic to share the post
-  };
-
-  if (postData.userId) {
-    checkIfUserLikeThisPost(postData.likes);
-
-    const userHandle = postData.userId.fullName
-      .split(" ")
-      .map((part) => part.toLowerCase().trim())
-      .join("") || "";
-    let imageUrl = postData.image;
-    let profileImage = 'https://i1.sndcdn.com/artworks-000189080723-ez2uad-t500x500.jpg';
-    if (imageUrl) {
-      imageUrl = imageUrl.includes('uploads\\posts') ? `${state.url.length > 0 ? state.url : '../../../../../'}/` + postData.image : postData.image;
-    }
-    if (postData.userId.profileImage) {
-      profileImage = postData.userId.profileImage.includes('uploads\\users') ? `${state.url.length > 0 ? state.url : '../../../../../'}/`
-        + postData.userId.profileImage : postData.userId.profileImage;
-    }
-    return (
-      <div className="post">
-        <div onClick={handleShowPost} className='post-user-header' id={postData._id}>
-        {profileImage && <img src={profileImage} alt="Post" className="user-image" />}
-          <h3>{postData.userId.fullName && ''} @{userHandle}</h3>
-          <p>{formatDistanceToNow(new Date(postData.createdAt), { addSuffix: true })}</p>
-        </div>
-        <div  onClick={handleShowPost}  className="post-details" id={postData._id}>
-          <p>{postData.content}</p>
-          {postData.image && <img src={imageUrl} alt="Post" className="post__image" />}
-        </div>
-        <PostActions
-          onLike={handleLike}
-          onComment={handleComment}
-          onShare={handleShare}
-          likesCount={likesCount}
-          commentsCount={commentsCount}
-          id={postData._id}
-          userLiked={liked}
-
-        />
-      </div>
-    );
-  }
-  else {
-    console.log('postData:', postData);
+  if (!postData || !postData.userDetails) {
     return <div>No user data available.</div>;
-
   }
-}
+
+  // Validate and format the date
+  const createdAt = postData?.createdAt ? new Date(postData.createdAt) : null;
+  const timeAgo = createdAt && !isNaN(createdAt.getTime())
+    ? formatDistanceToNow(createdAt, { addSuffix: true })
+    : "Invalid date";
+
+  const userHandle = postData!.userDetails.fullName
+    .split(" ")
+    .map((part) => part.toLowerCase().trim())
+    .join("") || "";
+
+  let imageUrl = postData.image;
+  let profileImage = 'https://i1.sndcdn.com/artworks-000189080723-ez2uad-t500x500.jpg';
+  if (imageUrl) {
+    imageUrl = imageUrl.includes('uploads\\posts') ? `${state.url.length > 0 ? state.url : '../../../../../'}/` + postData.image : postData.image;
+  }
+  if (postData.userDetails.profileImage) {
+    profileImage = postData.userDetails.profileImage.includes('uploads\\users') ? `${state.url.length > 0 ? state.url : '../../../../../'}/`
+      + postData.userDetails.profileImage : postData.userDetails.profileImage;
+  }
+  return (
+    <div className="post">
+      <div className="post-user-header" id={postData!._id}>
+        <img src={profileImage} alt="User" className="user-image" />
+        <h3>{postData!.userDetails.fullName} @{userHandle}</h3>
+        <p>{timeAgo}</p>
+      </div>
+      <div className="post-details" id={postData!._id}>
+        <p>{postData!.content}</p>
+        {postData.image && <img src={imageUrl} alt="Post" className="post__image" />}
+
+      </div>
+      <PostActions
+        onLike={() => setLikesCount(likesCount + 1)}
+        onComment={() => console.log('Comment')}
+        onShare={() => console.log('Share')}
+        likesCount={likesCount}
+        commentsCount={commentsCount}
+        id={postData!._id}
+        userLiked={liked}
+      />
+    </div>
+  );
+};
 
 export default Post;
+
+

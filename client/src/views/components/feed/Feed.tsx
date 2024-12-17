@@ -11,12 +11,13 @@ interface FeedProps {
 
 
 const Feed: FC<FeedProps> = ({ posts, addPost }) => {
+  console.log("Feed Posts", posts);
   return (
     <div className="feed">
       <PostForm addPost={addPost} />
       <div className="feed__posts">
         {posts.map((post, index) => (
-          <Post key={index} {...post} />
+          <Post key={index} postData={post} />
         ))}
       </div>
     </div>

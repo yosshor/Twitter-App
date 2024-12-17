@@ -11,12 +11,13 @@ export default async function getCurrentUser(url: string) {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${tokenUser}`,
-                // "Auth": tokenAuth,
+                //"Auth": tokenAuth,
             },
         });
         if (response.ok) {
             const user = await response.json();
-            return user.user;
+            console.log("user:", user.user[0]);
+            return user.user[0];
         }
         else {
             return null;

@@ -53,5 +53,8 @@ export interface userDetails {
   isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
-  id: string;
+  _id: string;
+  followingDetails: string[];
+  followerDetails: string[];
+  image: string;
 }
