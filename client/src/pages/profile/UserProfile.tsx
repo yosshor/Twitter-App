@@ -84,7 +84,6 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
             if (!token) {
               throw new Error("No token found in cookies");
             }
-            console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",userData._id);
           
             const response = await fetch(`${state.url}/api/users/following-count`, {
               method: "POST",
@@ -108,7 +107,42 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
       
         fetchFollowingCount();
       }, [state.url, userId,userData]);
+      useEffect(() => {
+        const fetchFollowersCount = async () => {
+          try {
+            if (!userData) return;
       
+            const token = document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("userTwitter="))
+              ?.split("=")[1];
+      
+            if (!token) {
+              throw new Error("No token found in cookies");
+            }
+      
+            const response = await fetch(`${state.url}/api/users/followers-count`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ userId: userData._id }),
+            });
+      
+            if (!response.ok) {
+              throw new Error("Failed to fetch followers count");
+            }
+      
+            const data = await response.json();
+            setFollowers(data.followersCount || 0);
+          } catch (err) {
+            console.error("Error in fetchFollowersCount:", err);
+          }
+        };
+      
+        fetchFollowersCount();
+      }, [state.url, userData]);
 
     if (loading) return <div>Loading...</div>;
     if (!userData) return <div>No user data available.</div>;
@@ -151,7 +185,7 @@ const UserProfile: FC<UserProfileProps> = (userId?) => {
                             </div>
                             <div className="followers-wrapper">
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <p>0</p>
+                                    <p>{followers}</p>
                                     <p>Followers</p>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
