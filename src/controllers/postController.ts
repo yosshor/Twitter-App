@@ -70,6 +70,37 @@ export const getAllPosts = async (req: Request, res: any) => {
         }
       },
       {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'postId',
+          as: 'commentsDetails'
+        }
+      },
+      { $unwind: { path: '$commentsDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'commentsDetails.userId',
+          foreignField: '_id',
+          as: 'commentsDetails.userDetails'
+        }
+      },
+      { $unwind: { path: '$commentsDetails.userDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$_id',
+          userDetails: { $first: '$userDetails' },
+          likesDetails: { $first: '$likesDetails' },
+          commentsDetails: { $push: '$commentsDetails' },
+          content: { $first: '$content' },
+          profileImage: { $first: '$userDetails.profileImage' },
+          image: { $first: '$image' },
+          createdAt: { $first: '$createdAt' },
+          followersCount: { $first: '$followersCount' }
+        }
+      },
+      {
         $project: {
           'userDetails.fullName': 1,
           'userDetails.email': 1,
@@ -78,6 +109,10 @@ export const getAllPosts = async (req: Request, res: any) => {
           'userDetails._id': 1,
           'likesDetails.userId': 1,
           'likesDetails.createdAt': 1,
+          'commentsDetails.userId': 1,
+          'commentsDetails.content': 1,
+          'commentsDetails.createdAt': 1,
+          'commentsDetails.userDetails.profileImage': 1,
           followersCount: 1,
           content: 1,
           profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails
@@ -243,10 +278,9 @@ export const addComment = async (req: any, res: any): Promise<void> => {
     const comment = new Comment({
       userId: userId,
       content: text,
-      recipeId: req.params.id,
+      postId: req.params.id,
     });
     await comment.save();
-
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
@@ -288,6 +322,37 @@ export const getUserPosts = async (req: any, res: any) => {
         }
       },
       {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'postId',
+          as: 'commentsDetails'
+        }
+      },
+      { $unwind: { path: '$commentsDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'commentsDetails.userId',
+          foreignField: '_id',
+          as: 'commentsDetails.userDetails'
+        }
+      },
+      { $unwind: { path: '$commentsDetails.userDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$_id',
+          userDetails: { $first: '$userDetails' },
+          likesDetails: { $first: '$likesDetails' },
+          commentsDetails: { $push: '$commentsDetails' },
+          content: { $first: '$content' },
+          profileImage: { $first: '$userDetails.profileImage' },
+          image: { $first: '$image' },
+          createdAt: { $first: '$createdAt' },
+          followersCount: { $first: '$followersCount' }
+        }
+      },
+      {
         $project: {
           'userDetails.fullName': 1,
           'userDetails.email': 1,
@@ -295,6 +360,10 @@ export const getUserPosts = async (req: any, res: any) => {
           'userDetails.profileImage': 1,
           'likesDetails.userId': 1,
           'likesDetails.createdAt': 1,
+          'commentsDetails.userId': 1,
+          'commentsDetails.content': 1,
+          'commentsDetails.createdAt': 1,
+          'commentsDetails.userDetails.profileImage': 1,
           followersCount: 1,
           content: 1,
           profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails

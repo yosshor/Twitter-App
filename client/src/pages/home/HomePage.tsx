@@ -5,7 +5,6 @@ import { Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { createContext } from "react";
 import { PostType } from '../../views/components/post/Post';
-import { getMinCurrentUserData } from '../../utils/get-current-user/get-current-user';
 
 export const userTwitterCookie = document.cookie
   .split("; ")
@@ -59,7 +58,6 @@ const Home = () => {
     };
 
     fetchUserPosts();
-    // getUserData();
 
   }, [userData, devState.url]);
 

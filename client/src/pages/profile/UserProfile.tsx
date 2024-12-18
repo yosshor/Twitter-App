@@ -14,7 +14,6 @@ const UserProfile: FC = () => {
     const userId = id;
     const { userData, loading } = useCurrentUser({ userId: userId! ?? undefined });
     const { minUserData, isLoading } = useCurrentUserMinData();
-
     const state = useContext(productionState);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [error, setError] = useState<string | null>(null);
