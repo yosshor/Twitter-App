@@ -1,82 +1,92 @@
-import React, { useState , useEffect } from 'react';
-import './Search.scss'; 
-import UserCard from '../../views/components/user/UserCard';
+    import React, { useState, useEffect } from "react";
+    import "./Search.scss";
+    import UserCard from "../../views/components/user/UserCard";
 
-const Search: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [users, setUsers] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+    const Search: React.FC = () => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [users, setUsers] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    handleSearch();
-  }, []); 
-  const handleSearch = async () => {
-    setIsLoading(true);
-    try {
-      const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('search='))
-        ?.split('=')[1];
+    useEffect(() => {
+        handleSearch();
+    }, []);
 
-      const response = await fetch('http://localhost:3000/api/users/find-users-by-username', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          //Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ username: token }),
-      });
+    const handleSearch = async () => {
+        setIsLoading(true);
+        try {
+        const token = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("search="))
+            ?.split("=")[1];
 
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data); 
-      } else {
-        console.error('Failed to fetch users');
-      }
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        const response = await fetch("http://localhost:3000/api/users/find-users-by-username", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: token }),
+        });
 
-  const handleFollow = async (userId: string) => {
-    try {
-      const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('userTwitter='))
-        ?.split('=')[1];
-        console.log(userId);
-      const response = await fetch('http://localhost:3000/api/users/follow-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        
-        body: JSON.stringify({ userId} ),
-      });
-      console.log(response);
-      if (response.ok) {
-        console.log(`You followed user with ID: ${userId}`);
-      } else {
-        console.error('Failed to follow user');
-      }
-    } catch (error) {
-      console.error('Error following user:', error);
-    }
-  };
+        if (response.ok) {
+            const data = await response.json();
+            setUsers(data); 
+        } else {
+            console.error("Failed to fetch users");
+        }
+        } catch (error) {
+        console.error("Error fetching users:", error);
+        } finally {
+        setIsLoading(false);
+        }
+    };
 
-  return (
-    <div className="search-page">
-      <div className="user-list">
-        {users.length === 0 && !isLoading && <p>No users found</p>}
-        {users.map((user) => (
-          <UserCard key={user._id} user={user} onFollow={handleFollow} />
-        ))}
-      </div>
-    </div>
-  );
-};
+    const handleFollow = async (userId: string, isFollowing: boolean) => {
+        try {
+        const token = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("userTwitter="))
+            ?.split("=")[1];
 
-export default Search;
+        const response = await fetch("http://localhost:3000/api/users/follow-user", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ userId }),
+        });
+
+        if (response.ok) {
+            console.log(isFollowing ? `Unfollowed user with ID: ${userId}` : `Followed user with ID: ${userId}`);
+
+    
+            setUsers((prevUsers) =>
+            prevUsers.map((user) =>
+                user._id === userId ? { ...user, isFollowing: !isFollowing } : user
+            )
+            );
+        } else {
+            console.error("Failed to toggle follow status");
+        }
+        } catch (error) {
+        console.error("Error toggling follow status:", error);
+        }
+    };
+
+    return (
+        <div className="search-page">
+        <div className="user-list">
+            {users.length === 0 && !isLoading && <p>No users found</p>}
+            {users.map((user) => (
+            <UserCard
+                key={user._id}
+                user={user}
+                onFollow={() => handleFollow(user._id, user.isFollowing)}
+            />
+            ))}
+        </div>
+        </div>
+    );
+    };
+
+    export default Search;
