@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import getCurrentUser from "../utils/get-current-user/get-current-user";
+import getCurrentUser, {
+  getMinCurrentUserData,
+} from "../utils/get-current-user/get-current-user";
 import type { userDetails } from "../../../src/models/User";
 import { productionState } from "../pages/home/HomePage";
 import { useContext } from "react";
@@ -22,9 +24,36 @@ const useCurrentUser = ({ userId }: { userId?: string } = {}) => {
     };
 
     fetchUserData();
-  }, [userId, state.url]); 
+  }, [userId, state.url]);
 
   return { userData, loading };
+};
+
+export const useCurrentUserMinData = () => {
+  const [minUserData, setMinUserData] = useState<{
+    userId: string;
+    userData: { email: string; name: string; role: string; userId: string };
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const state = useContext(productionState);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = await getMinCurrentUserData(state.url);
+        console.log("userHok:", user);
+        setMinUserData(user ?? null);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setMinUserData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [state.url]);
+
+  return { minUserData, isLoading };
 };
 
 export default useCurrentUser;

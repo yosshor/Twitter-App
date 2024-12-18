@@ -1,6 +1,6 @@
 import { FC, useContext, useState, useEffect } from 'react';
 import './Post.scss';
-import { productionState } from "../../../pages/home/HomePage";
+import { productionState, userToken } from "../../../pages/home/HomePage";
 import { formatDistanceToNow } from 'date-fns';
 import PostActions from '../postActions/PostActions';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -24,33 +24,33 @@ export interface PostType {
 
 
 
-const Post: FC<{ postData?: PostType }> = ({ postData }) => {
+const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData }) => {
   const state = useContext(productionState);
   const [likesCount, setLikesCount] = useState(postData?.likesDetails?.length || 0);
   const [commentsCount, setCommentsCount] = useState(0);
   const [liked, setLiked] = useState(false);
   const [url, setUrl] = useState(location.pathname + location.search);
   const navigate = useNavigate();
-  // const { id } = useParams<{ id: string }>();
-
-  useEffect(() => {
-    console.log("Current URL:", url);
-  }, [location]);
-
-
+  const userTokenDetails = useContext(userToken);
 
   const handleUserClick = (e: any) => {
     const userId = e.currentTarget.id;
     console.log("user clicked", userId);
-    if(!url.includes('profile')) navigate(`profile/${userId}`);
+    if (!url.includes('profile')) navigate(`profile/${userId}`);
   }
   const handlePostClick = (e: any) => {
     console.log("Post clicked", e.target.id);
   }
+
   useEffect(() => {
-    if (postData && postData.likesDetails && postData.userDetails?._id) {
-      const userLiked = postData.likesDetails.findIndex((like: any) => like.userDetails === postData.userDetails._id);
-      if (userLiked > -1) setLiked(true);
+    if (postData && postData.likesDetails) {
+      const userLiked = postData.likesDetails.findIndex((like: any) => like.userId === userId);
+      if (userLiked > -1) {
+        setLiked(true);
+      }
+      else {
+        setLiked(false);
+      }
     }
     else {
       setLikesCount(0);

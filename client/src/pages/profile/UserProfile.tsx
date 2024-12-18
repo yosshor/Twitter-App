@@ -1,19 +1,19 @@
 import { FC, useContext, useEffect, useState } from "react";
-import useCurrentUser from "../../hooks/useCurrentUser";
+import useCurrentUser, { useCurrentUserMinData } from "../../hooks/useCurrentUser";
 import './UserProfile.scss';
 import { productionState } from "../../../src/pages/home/HomePage";
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Post from "../../views/components/post/Post";
 import { PostType } from "../../views/components/post/Post";
-import type { userDetails } from "../../../../src/models/User";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
 const UserProfile: FC = () => {
     const { id } = useParams<{ id: string }>();
     const userId = id;
     const { userData, loading } = useCurrentUser({ userId: userId! ?? undefined });
+    const { minUserData, isLoading } = useCurrentUserMinData();
 
     const state = useContext(productionState);
     const [posts, setPosts] = useState<PostType[]>([]);
@@ -77,8 +77,8 @@ const UserProfile: FC = () => {
         }
     }, [userData, state.url]);
 
-    if (loading) return <div>Loading...</div>;
-    if (!userData) return <div>No user data available.</div>;
+    if (loading || isLoading) return <div>Loading...</div>;
+    if (!userData || !minUserData) return <div>No user data available.</div>;
 
     const imageUrl = `${state.url}/${userData.profileImage}`;
     const joinedDate = new Date(userData.createdAt).toDateString();
@@ -119,11 +119,11 @@ const UserProfile: FC = () => {
                             <div className="followers-wrapper">
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                                     <p>{followers}</p>
-                                    <p>Followers</p>
+                                    <p style={{ paddingLeft: '10px', paddingRight: '10px' }}>Followers</p>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                                     <p>{following}</p>
-                                    <p>Following</p>
+                                    <p style={{ paddingLeft: '10px' }}>Following</p>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +152,7 @@ const UserProfile: FC = () => {
                         <p>No posts found for this user.</p>
                     ) : (
                         posts.map((post, index) => (
-                            <Post key={index} postData={post} />
+                            <Post userId={minUserData.userId} key={index} postData={post} />
                         ))
                     )}
                 </div>

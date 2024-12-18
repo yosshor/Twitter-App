@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
 import './PostActions.scss';
@@ -10,16 +10,18 @@ interface PostActionsProps {
     onShare: () => void;
     likesCount: number;
     commentsCount: number;
-    id: string,
+    id: string;
     userLiked: boolean;
-    // likeCount: number;
-    // setLikesCount: () => void;
 }
 
 const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, likesCount, commentsCount, id, userLiked }) => {
-    const [liked, setLiked] = useState(false);
     const state = useContext(productionState);
+    const [liked, setLiked] = useState(userLiked);
     const [likes, setLikesCount] = useState(likesCount);
+
+    useEffect(() => {
+        setLiked(userLiked);
+    }, [userLiked]);
 
     async function likePost(postId: string) {
         try {
@@ -39,30 +41,29 @@ const PostActions: React.FC<PostActionsProps> = ({ onLike, onComment, onShare, l
                 const data = await response.json();
                 if (data.message === "Like removed") {
                     setLikesCount(likes > 0 ? likes - 1 : 0);
-                    console.log("Post unlike successfully");
-                }
-                else {
+                    setLiked(false);
+                    console.log("Post unliked successfully");
+                } else {
                     setLikesCount(likes + 1);
+                    setLiked(true);
                     console.log("Post liked successfully");
                 }
             } else {
                 console.error("Error liking post");
-                setLikesCount(likes > 0 ? likes - 1 : 0);
             }
         } catch (error) {
             console.error("Error liking post:", error);
-            setLikesCount(likes - 1);
         }
     }
 
     const handleLike = (postId: string) => {
-        setLiked(!liked);
         likePost(postId);
         onLike();
     };
+
     return (
         <div className="post-actions">
-            <button onClick={() => handleLike(id)} className={liked || userLiked ? 'liked' : ''}>
+            <button onClick={() => handleLike(id)} className={liked ? 'liked' : ''}>
                 <FontAwesomeIcon icon={faHeart} /> {likes}
             </button>
             <button onClick={onComment}>

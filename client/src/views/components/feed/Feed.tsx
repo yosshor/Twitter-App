@@ -6,11 +6,15 @@ import { FC, useEffect, useState } from 'react';
 
 interface FeedProps {
   posts: any[];
+  user: {
+    userId: string;
+    userData: { email: string; name: string; role: string; userId: string };
+  };
   addPost: (newPost: any) => void;
 }
 
 
-const Feed: FC<FeedProps> = ({ posts, addPost }) => {
+const Feed: FC<FeedProps> = ({ user, posts, addPost }) => {
   const [postList, setPostList] = useState(posts);
   const handleAddPost = (newPost: any) => {
     console.log("newPost:", newPost);
@@ -20,13 +24,13 @@ const Feed: FC<FeedProps> = ({ posts, addPost }) => {
   useEffect(() => {
     setPostList(posts);
   }, [posts]);
-  
+
   return (
     <div className="feed">
       <PostForm addPost={handleAddPost} />
       <div className="feed__posts">
         {postList.map((post, index) => (
-          <Post key={index} postData={post} />
+          <Post userId={user.userId} key={index} postData={post} />
         ))}
       </div>
     </div>

@@ -1,10 +1,11 @@
 import Feed from '../../views/components/feed/Feed';
 import './Home.scss';
-import useCurrentUser from '../../hooks/useCurrentUser';
+import useCurrentUser, { useCurrentUserMinData } from '../../hooks/useCurrentUser';
 import { Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { createContext } from "react";
 import { PostType } from '../../views/components/post/Post';
+import { getMinCurrentUserData } from '../../utils/get-current-user/get-current-user';
 
 export const userTwitterCookie = document.cookie
   .split("; ")
@@ -19,8 +20,9 @@ export const productionState = createContext(devState);
 export const userToken = createContext({ tokenTwitterUser: userTwitterCookie });
 
 const Home = () => {
-  // const [posts, setPosts] = useState<any[]>([]);
   const { userData, loading } = useCurrentUser();
+  const { minUserData, isLoading } = useCurrentUserMinData();
+
   const [posts, setPosts] = useState<PostType[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +34,7 @@ const Home = () => {
           throw new Error("No token found in cookies");
         }
 
-        const response = await fetch(`${devState.url}/api/post/get-all`, { //get-user-posts`, {
+        const response = await fetch(`${devState.url}/api/post/get-all`, { 
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -57,11 +59,14 @@ const Home = () => {
     };
 
     fetchUserPosts();
+    // getUserData();
+
   }, [userData, devState.url]);
 
 
-  if (loading) return <div>Loading...</div>;
-  if (!userData) return <div>No user data available.</div>;
+  if (loading || isLoading) return <div>Loading...</div>;
+  if (!userData || !minUserData) return <div>No user data available.</div>;
+
 
 
   // Function to add new post
@@ -78,7 +83,7 @@ const Home = () => {
           <>
             {userData ? (
               <>
-                <Feed posts={posts} addPost={addPost} />
+                {minUserData && <Feed user={minUserData} posts={posts} addPost={addPost} />}
               </>
             ) : (
               <div>No user data found.</div>

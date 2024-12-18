@@ -47,3 +47,20 @@ export default async function getCurrentUser(
     res.status(500).json({ error: "Failed to fetch user data" });
   }
 }
+
+export async function getMinDataForCurrentUser(
+  req: any,
+  res: any
+): Promise<void> {
+  try {
+    const { userId, userData } = getUserIdAndData(req);
+    if (!userId && !userData) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    res.status(200).json({ userId: userId, userData: userData });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Failed to fetch user data" });
+  }
+}
