@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import  User  from "../models/User"; 
-import { Following  } from "../models/following";
+import { Following  } from "../models/Following";
 
 import { Types } from "mongoose";
 

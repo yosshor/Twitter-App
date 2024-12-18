@@ -46,19 +46,12 @@ export function getUserIdAndData(req: any): {
   userData: string;
 } {
   try {
-    console.log("request body:", req.body);
     const token = req.header("Authorization")?.replace("Bearer ", "");
-    const searchUserId = req.header("UserId");
-    console.log("token on request header:", token, 'searchUserId:', searchUserId);
-    const { userToken } = req.body;
-    console.log("token on request header:", token, userToken, 'searchUserId:', searchUserId, req.headers);
     const secret = process.env.SECRET!;
 
   // Try decoding without verifying first
   const decoded = jwt.decode(token, secret, true); // true verifies signature
-  
   const userId = decoded.userId;
-  console.log("userId:", userId);
   return { userId: userId, userData: decoded };
   } catch (error) {
     console.error("Error getting user id and data:", error);

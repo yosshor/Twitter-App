@@ -3,7 +3,7 @@ import './Post.scss';
 import { productionState } from "../../../pages/home/HomePage";
 import { formatDistanceToNow } from 'date-fns';
 import PostActions from '../postActions/PostActions';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export interface PostType {
   content: string;
@@ -29,12 +29,20 @@ const Post: FC<{ postData?: PostType }> = ({ postData }) => {
   const [likesCount, setLikesCount] = useState(postData?.likesDetails?.length || 0);
   const [commentsCount, setCommentsCount] = useState(0);
   const [liked, setLiked] = useState(false);
+  const [url, setUrl] = useState(location.pathname + location.search);
   const navigate = useNavigate();
+  // const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    console.log("Current URL:", url);
+  }, [location]);
+
+
 
   const handleUserClick = (e: any) => {
     const userId = e.currentTarget.id;
     console.log("user clicked", userId);
-    navigate(`profile/${userId}`);
+    if(!url.includes('profile')) navigate(`profile/${userId}`);
   }
   const handlePostClick = (e: any) => {
     console.log("Post clicked", e.target.id);

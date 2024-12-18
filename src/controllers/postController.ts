@@ -263,13 +263,13 @@ export const addComment = async (req: any, res: any): Promise<void> => {
 export const getUserPosts = async (req: any, res: any) => {
   try {
     const userId = req.userId;
+    const getAnotherUserPost = req.header("UserId") ?? null;
 
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
-
     const posts = await Post.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $match: { userId: new mongoose.Types.ObjectId(getAnotherUserPost ?? userId ) } },
       {
         $lookup: {
           from: 'users',

@@ -7,16 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Post from "../../views/components/post/Post";
 import { PostType } from "../../views/components/post/Post";
 import type { userDetails } from "../../../../src/models/User";
+import { useLocation, useParams } from "react-router-dom";
 
 
-interface UserProfileProps {
-    userId: string;
-}
-
-
-const UserProfile: FC<UserProfileProps> = ({ userId }) => {
-    console.log("userId:", userId);
-    const { userData, loading } = useCurrentUser();
+const UserProfile: FC = () => {
+    const { id } = useParams<{ id: string }>();
+    const userId = id;
+    const { userData, loading } = useCurrentUser({ userId: userId! ?? undefined });
 
     const state = useContext(productionState);
     const [posts, setPosts] = useState<PostType[]>([]);
@@ -76,6 +73,7 @@ const UserProfile: FC<UserProfileProps> = ({ userId }) => {
         else {
             setFollowers(userData.followerDetails.length || 0);
             setFollowing(userData.followingDetails.length || 0);
+
         }
     }, [userData, state.url]);
 

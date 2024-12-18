@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "profile", 
-        element: <UserProfile  userId=''/>,
+        element: <UserProfile />,
       },
       {
         path: "profile/:id", // Dynamic path for profile with user ID

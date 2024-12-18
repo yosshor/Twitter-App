@@ -8,7 +8,6 @@ const useCurrentUser = ({ userId }: { userId?: string } = {}) => {
   const [userData, setUserData] = useState<userDetails | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const state = useContext(productionState);
-  console.log("userId:", userId);
   useEffect(() => {
     const fetchUserData = async () => {
       try {

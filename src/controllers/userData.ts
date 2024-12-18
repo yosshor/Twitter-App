@@ -7,11 +7,9 @@ export default async function getCurrentUser(
 ): Promise<void> {
   try {
     const { userId, userData } = getUserIdAndData(req);
-
-    console.log("userId", userId);
-
+    const searchUserId = req.header("UserId");
     const user = await mongoose.model("User").aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+      { $match: { _id: new mongoose.Types.ObjectId(searchUserId ?? userId) } },
       {
         $lookup: {
           from: "followings",
