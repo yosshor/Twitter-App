@@ -42,7 +42,6 @@ const Search: React.FC = () => {
 
   const handleFollow = async (userId: string, isFollowing: boolean) => {
     try {
-
       const token = document.cookie
         .split("; ")
         .find((row) => row.startsWith("userTwitter="))
@@ -62,10 +61,9 @@ const Search: React.FC = () => {
         console.log(data);
         console.log(isFollowing ? `Unfollowed user with ID: ${userId}` : `Followed user with ID: ${userId}`);
         setUsers((prevUsers) =>
-          prevUsers.map((user) => {
-            console.log(user._id, userId, isFollowing);
+          prevUsers.map((user) =>
             user._id === userId ? { ...user, isFollowing: !isFollowing } : user
-          })
+          )
         );
       } else {
         console.error(data.error);

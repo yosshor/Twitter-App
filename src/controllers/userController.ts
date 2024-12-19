@@ -7,13 +7,21 @@ import { error } from "console";
 
 export const findUsersByUsername = async (
   req: any,
-  res: Response
+  res: any
 ): Promise<void> => {
   try {
     const { username } = req.body;
     const currentUserId = req.userId;
 
-    console.log("Got Here", username);
+    let followings = await Following.findOne({ currentUserId });
+    if (!followings) {
+      followings = new Following({
+        currentUserId,
+        followingList: [],
+      });
+    }
+    console.log("sdfsDF",followings);
+
     if (!username) {
       res.status(400).json({ message: "Username is required" });
       return;
@@ -23,15 +31,19 @@ export const findUsersByUsername = async (
       fullName: { $regex: username, $options: "i" },
     });
 
-    const following = await Following.findOne({ userId: currentUserId });
-
+    // const following = await Following.findOne({ userId: currentUserId });
+    // console.log(following);
+    
     const usersWithFollowingStatus = users.map((user) => ({
       ...user.toObject(),
-      isFollowing: following?.followingList.some(
-        (id) => id.toString() === user._id.toString()
-      ),
+      isFollowing: followings
+        ? followings.followingList.some(
+            (id) => id.toString() === user._id.toString()
+          )
+        : false,
     }));
 
+    console.log(usersWithFollowingStatus);
     res.status(200).json(usersWithFollowingStatus);
   } catch (error) {
     console.error("Error finding users by username:", error);
@@ -43,6 +55,7 @@ export const findUsersByUsername = async (
     }
   }
 };
+
 export const followUser = async (req: any, res: any) => {
   try {
     const userIdToFollow = req.body.userId;

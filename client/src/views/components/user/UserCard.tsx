@@ -12,14 +12,17 @@ interface UserCardProps {
 }
 
 const UserCard: React.FC<UserCardProps> = ({ user, onFollow }) => {
+  console.log("UserCard:", user);
   const state = useContext(productionState);
   const defaultImage = "https://static.vecteezy.com/system/resources/previews/024/983/914/non_2x/simple-user-default-icon-free-png.png";
-  const url = (user.profileImage && user.profileImage.length > 0 && user.profileImage.includes('uploads\\users')) ? `${state.url.length > 0 ? state.url : '../../../../../'}/`
-    + user.profileImage : user.profileImage;
+  const url = (user.profileImage && user.profileImage.length > 0 && user.profileImage.includes('uploads\\users')) 
+    ? `${state.url.length > 0 ? state.url : '../../../../../'}/` + user.profileImage 
+    : user.profileImage || defaultImage;
+
   return (
     <div className="user-card">
       <img
-        src={url || defaultImage}
+        src={url}
         alt={`${user.fullName}'s profile`}
         className="user-card-image"
         style={{
