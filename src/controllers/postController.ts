@@ -54,75 +54,83 @@ export const getAllPosts = async (req: Request, res: any) => {
     const posts = await Post.aggregate([
       {
         $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'userDetails'
-        }
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
       },
-      { $unwind: '$userDetails' },
+      { $unwind: "$userDetails" },
       {
         $lookup: {
-          from: 'likes',
-          localField: '_id',
-          foreignField: 'postId',
-          as: 'likesDetails'
-        }
+          from: "likes",
+          localField: "_id",
+          foreignField: "postId",
+          as: "likesDetails",
+        },
       },
       {
         $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'postId',
-          as: 'commentsDetails'
-        }
+          from: "comments",
+          localField: "_id",
+          foreignField: "postId",
+          as: "commentsDetails",
+        },
       },
-      { $unwind: { path: '$commentsDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $unwind: { path: "$commentsDetails", preserveNullAndEmptyArrays: true },
+      },
       {
         $lookup: {
-          from: 'users',
-          localField: 'commentsDetails.userId',
-          foreignField: '_id',
-          as: 'commentsDetails.userDetails'
-        }
+          from: "users",
+          localField: "commentsDetails.userId",
+          foreignField: "_id",
+          as: "commentsDetails.userDetails",
+        },
       },
-      { $unwind: { path: '$commentsDetails.userDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $unwind: {
+          path: "$commentsDetails.userDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       {
         $group: {
-          _id: '$_id',
-          userDetails: { $first: '$userDetails' },
-          likesDetails: { $first: '$likesDetails' },
-          commentsDetails: { $push: '$commentsDetails' },
-          content: { $first: '$content' },
-          profileImage: { $first: '$userDetails.profileImage' },
-          image: { $first: '$image' },
-          createdAt: { $first: '$createdAt' },
-          followersCount: { $first: '$followersCount' }
-        }
+          _id: "$_id",
+          userDetails: { $first: "$userDetails" },
+          likesDetails: { $first: "$likesDetails" },
+          commentsDetails: { $push: "$commentsDetails" },
+          content: { $first: "$content" },
+          profileImage: { $first: "$userDetails.profileImage" },
+          image: { $first: "$image" },
+          createdAt: { $first: "$createdAt" },
+          followersCount: { $first: "$followersCount" },
+        },
       },
       {
         $project: {
-          'userDetails.fullName': 1,
-          'userDetails.email': 1,
-          'userDetails.createdAt': 1,
-          'userDetails.profileImage': 1,
-          'userDetails._id': 1,
-          'likesDetails.userId': 1,
-          'likesDetails.createdAt': 1,
-          'commentsDetails.userId': 1,
-          'commentsDetails.content': 1,
-          'commentsDetails.createdAt': 1,
-          'commentsDetails.userDetails.profileImage': 1,
+          "userDetails.fullName": 1,
+          "userDetails.email": 1,
+          "userDetails.createdAt": 1,
+          "userDetails.profileImage": 1,
+          "userDetails._id": 1,
+          "likesDetails.userId": 1,
+          "likesDetails.createdAt": 1,
+          "commentsDetails.userId": 1,
+          "commentsDetails.content": 1,
+          "commentsDetails.createdAt": 1,
+          "commentsDetails.userDetails.profileImage": 1,
+          "commentsDetails.userDetails.fullName": 1, // Include the fullName from commentsDetails.userDetails
+
           followersCount: 1,
           content: 1,
-          profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails
+          profileImage: "$userDetails.profileImage", // Include the profileImage from userDetails
           image: 1, // Include the post image
           createdAt: 1,
-        }
+        },
       },
-      { $sort: { createdAt: -1 } }
+      { $sort: { createdAt: -1 } },
     ]);
-    
 
     res.status(200).json({ posts: posts }); // Send posts if successful
   } catch (error) {
@@ -285,10 +293,11 @@ export const addComment = async (req: any, res: any): Promise<void> => {
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
+    const user = await User.findById(userId);
     // recipe.comments.push(comment._id);
     await post.save();
 
-    res.json(post);
+    res.json({comment: comment, userData: user });
   } catch (error) {
     res.status(500).json({ error: "Failed to add comment" });
   }
@@ -303,77 +312,88 @@ export const getUserPosts = async (req: any, res: any) => {
       return res.status(400).json({ error: "User ID is required" });
     }
     const posts = await Post.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(getAnotherUserPost ?? userId ) } },
       {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'userDetails'
-        }
-      },
-      { $unwind: '$userDetails' },
-      {
-        $lookup: {
-          from: 'likes',
-          localField: '_id',
-          foreignField: 'postId',
-          as: 'likesDetails'
-        }
+        $match: {
+          userId: new mongoose.Types.ObjectId(getAnotherUserPost ?? userId),
+        },
       },
       {
         $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'postId',
-          as: 'commentsDetails'
-        }
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
       },
-      { $unwind: { path: '$commentsDetails', preserveNullAndEmptyArrays: true } },
+      { $unwind: "$userDetails" },
       {
         $lookup: {
-          from: 'users',
-          localField: 'commentsDetails.userId',
-          foreignField: '_id',
-          as: 'commentsDetails.userDetails'
-        }
+          from: "likes",
+          localField: "_id",
+          foreignField: "postId",
+          as: "likesDetails",
+        },
       },
-      { $unwind: { path: '$commentsDetails.userDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "postId",
+          as: "commentsDetails",
+        },
+      },
+      {
+        $unwind: { path: "$commentsDetails", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "commentsDetails.userId",
+          foreignField: "_id",
+          as: "commentsDetails.userDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$commentsDetails.userDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       {
         $group: {
-          _id: '$_id',
-          userDetails: { $first: '$userDetails' },
-          likesDetails: { $first: '$likesDetails' },
-          commentsDetails: { $push: '$commentsDetails' },
-          content: { $first: '$content' },
-          profileImage: { $first: '$userDetails.profileImage' },
-          image: { $first: '$image' },
-          createdAt: { $first: '$createdAt' },
-          followersCount: { $first: '$followersCount' }
-        }
+          _id: "$_id",
+          userDetails: { $first: "$userDetails" },
+          likesDetails: { $first: "$likesDetails" },
+          commentsDetails: { $push: "$commentsDetails" },
+          content: { $first: "$content" },
+          profileImage: { $first: "$userDetails.profileImage" },
+          image: { $first: "$image" },
+          createdAt: { $first: "$createdAt" },
+          followersCount: { $first: "$followersCount" },
+        },
       },
       {
         $project: {
-          'userDetails.fullName': 1,
-          'userDetails.email': 1,
-          'userDetails.createdAt': 1,
-          'userDetails.profileImage': 1,
-          'likesDetails.userId': 1,
-          'likesDetails.createdAt': 1,
-          'commentsDetails.userId': 1,
-          'commentsDetails.content': 1,
-          'commentsDetails.createdAt': 1,
-          'commentsDetails.userDetails.profileImage': 1,
+          "userDetails.fullName": 1,
+          "userDetails.email": 1,
+          "userDetails.createdAt": 1,
+          "userDetails.profileImage": 1,
+          "likesDetails.userId": 1,
+          "likesDetails.createdAt": 1,
+          "commentsDetails.userId": 1,
+          "commentsDetails.content": 1,
+          "commentsDetails.createdAt": 1,
+          "commentsDetails.userDetails.profileImage": 1,
+          "commentsDetails.userDetails.fullName": 1, // Include the fullName from commentsDetails.userDetails
           followersCount: 1,
           content: 1,
-          profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails
+          profileImage: "$userDetails.profileImage", // Include the profileImage from userDetails
           image: 1, // Include the post image
-          createdAt: 1
-        }
+          createdAt: 1,
+        },
       },
-      { $sort: { createdAt: -1 } }
+      { $sort: { createdAt: -1 } },
     ]);
-  
 
     res.status(200).json({ posts });
   } catch (error) {

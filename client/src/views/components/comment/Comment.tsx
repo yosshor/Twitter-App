@@ -3,16 +3,16 @@ import { productionState, userToken } from '../../../pages/home/HomePage';
 
 interface CommentProps {
   postId: string;
+  addComment: (newComment: any) => void;
 }
 
-const Comment: React.FC<CommentProps> = ({ postId }) => {
+const Comment: React.FC<CommentProps> = ({ postId, addComment }) => {
   const [comment, setComment] = useState('');
   const state = useContext(productionState);
   const token = useContext(userToken);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
-    console.log('Comment:', e.target.value);
   };
 
   const handleCommentSubmit = async () => {
@@ -28,8 +28,10 @@ const Comment: React.FC<CommentProps> = ({ postId }) => {
       });
 
       if (response.ok) {
-        console.log('Comment submitted successfully');
+        const newComment = await response.json();
+        console.log('Comment submitted successfully',newComment);
         setComment('');
+        addComment(newComment); // Call the addComment callback with the new comment
       } else {
         console.error('Error submitting comment');
       }

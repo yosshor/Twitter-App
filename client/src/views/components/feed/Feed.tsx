@@ -24,7 +24,6 @@ const Feed: FC<FeedProps> = ({ user, posts, addPost }) => {
   useEffect(() => {
     setPostList(posts);
   }, [posts]);
-  console.log("postList:", postList);
   return (
     <div className="feed">
       <PostForm addPost={handleAddPost} />

@@ -41,14 +41,6 @@ const Sidebar: FC<SidebarProps> = ({ userData }) => {
             </button>
           </Link>
         </div>
-        <div>
-          <Link to="posts" >
-            <button className='button'>
-              <ActionButton icon={faClipboard} label="Posts" onClick={handlePost} />
-            </button>
-          </Link>
-        </div>
-        <button>Topics</button>
       </div>
     </div>
   );
