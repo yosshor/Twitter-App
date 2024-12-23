@@ -29,7 +29,7 @@ const Comment: React.FC<CommentProps> = ({ postId, addComment }) => {
 
       if (response.ok) {
         const newComment = await response.json();
-        console.log('Comment submitted successfully',newComment);
+        console.log('Comment submitted successfully', newComment);
         setComment('');
         addComment(newComment); // Call the addComment callback with the new comment
       } else {

@@ -1,30 +1,31 @@
 import React, { useState, useEffect } from "react";
 import "./Search.scss";
 import UserCard from "../../views/components/user/UserCard";
+import { useLocation } from "react-router-dom";
 
 const Search: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState<string>(location.state?.searchQuery || "");
 
   useEffect(() => {
-    handleSearch();
-  }, []);
+    console.log("Search term:", searchTerm);
+    console.log("Location state:", location.state);
+    if (searchTerm) {
+      handleSearchQuery(searchTerm);
+    }
+  }, [searchTerm]);
 
-  const handleSearch = async () => {
+  const handleSearchQuery = async (name: string) => {
     setIsLoading(true);
     try {
-      const token = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("search="))
-        ?.split("=")[1];
-
       const response = await fetch("http://localhost:3000/api/users/find-users-by-username", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: token }),
+        body: JSON.stringify({ username: name }),
       });
 
       if (response.ok) {
@@ -37,6 +38,7 @@ const Search: React.FC = () => {
       console.error("Error fetching users:", error);
     } finally {
       setIsLoading(false);
+      document.cookie = "search=; Max-Age=0; path=/";
     }
   };
 
@@ -56,9 +58,8 @@ const Search: React.FC = () => {
         body: JSON.stringify({ userId }),
       });
       const data = await response.json();
-
+      console.log(data);
       if (response.ok) {
-        console.log(data);
         console.log(isFollowing ? `Unfollowed user with ID: ${userId}` : `Followed user with ID: ${userId}`);
         setUsers((prevUsers) =>
           prevUsers.map((user) =>

@@ -394,6 +394,7 @@ export const getUserPosts = async (req: any, res: any) => {
       },
       { $sort: { createdAt: -1 } },
     ]);
+    
 
     res.status(200).json({ posts });
   } catch (error) {

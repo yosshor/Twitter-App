@@ -2,7 +2,7 @@ import { FC, useContext, useState, useEffect } from 'react';
 import './Post.scss';
 import { productionState, userToken } from "../../../pages/home/HomePage";
 import PostActions from '../postActions/PostActions';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Comment from "../../../views/components/comment/Comment";
 import e from 'express';
 import TwitterReplies from '../replies/Replies';
@@ -46,6 +46,7 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
   const userTokenDetails = useContext(userToken);
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [showComment, setShowComment] = useState(false);
+
   const handleUserClick = (e: any) => {
     const userId = e.currentTarget.id;
     console.log("user clicked", userId);
@@ -89,6 +90,7 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
   };
 
   useEffect(() => {
+    setShowComment(!url.includes('profile') ? false : true);
     if (postData && postData.likesDetails) {
       const userLiked = postData.likesDetails.findIndex((like: any) => like.userId === userId);
       if (userLiked > -1) {
@@ -156,7 +158,7 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
       {showCommentInput && (
         <Comment postId={postData._id} addComment={addComment} />
       )}
-      {postData.commentsDetails && postData.commentsDetails.filter(comment => Object.keys(comment).length > 0).length > 0 && (
+      {showComment && postData.commentsDetails && postData.commentsDetails.filter(comment => Object.keys(comment).length > 0).length > 0 && (
         <TwitterReplies commentsDetails={postData.commentsDetails} state={state} />
       )}
 

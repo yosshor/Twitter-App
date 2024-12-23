@@ -41,7 +41,20 @@ export default async function getCurrentUser(
       res.status(404).json({ error: "User not found" });
       return;
     }
-    res.status(200).json({ userId: userId, userData: userData, user: user });
+    //check if user is following
+    const followings = user[0].followingDetails[0];
+    const isFollowing = followings
+      ? followings.followingList.some(
+          (id: any) => id.toString() === userId.toString()
+        )
+      : false;
+    res
+      .status(200)
+      .json({
+        userId: userId,
+        userData:  { ...(typeof userData === 'object' && userData !== null ? userData : {}), isFollowing: isFollowing },
+        user: user,
+      });
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Failed to fetch user data" });

@@ -17,19 +17,51 @@ const UserProfile: FC = () => {
     const state = useContext(productionState);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [isFollowing, setIsFollowing] = useState(false);
+    const [isFollowing, setIsFollowing] = useState<boolean>(false);
     const [followers, setFollowers] = useState<number>(0);
     const [following, setFollowing] = useState<number>(0);
 
-    const handleFollow = () => {
-        setIsFollowing(!isFollowing);
-        // Add logic to follow/unfollow the user in the backend
-    };
+    // const handleFollow = () => {
+    //     // Add logic to follow/unfollow the user in the backend
+    // };
 
     const getToken = () => document.cookie
         .split("; ")
         .find((row) => row.startsWith("userTwitter="))
         ?.split("=")[1];
+
+    const handleFollow = async (e: React.MouseEvent<HTMLButtonElement>, isFollowing: boolean) => {
+        try {
+            const userId = e.currentTarget.id;
+            console.log("userId", userId);
+            setIsFollowing(!isFollowing);
+            const token = getToken();
+
+            const response = await fetch("http://localhost:3000/api/users/follow-user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ userId }),
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                console.log(isFollowing ? `Unfollowed user with ID: ${userId}` : `Followed user with ID: ${userId}`);
+                setIsFollowing(data.isFollowing ? true : false);
+                // setUsers((prevUsers) =>
+                //     prevUsers.map((user) =>
+                //         user._id === userId ? { ...user, isFollowing: !isFollowing } : user
+                //     )
+                // );
+            } else {
+                console.error(data.error);
+            }
+        } catch (error) {
+            console.error("Error toggling follow status:", error);
+        }
+    };
 
     useEffect(() => {
 
@@ -57,6 +89,7 @@ const UserProfile: FC = () => {
                 }
 
                 const data = await response.json();
+                console.log("profiledata", data);
                 if (Array.isArray(data.posts)) {
                     setPosts(data.posts);
                 } else {
@@ -70,8 +103,9 @@ const UserProfile: FC = () => {
         fetchUserPosts();
         if (!userData || Object.values(userData).length === 0) return;
         else {
-            setFollowers(userData.followerDetails.length || 0);
-            setFollowing(userData.followingDetails.length || 0);
+            console.log("userData from userprifile", userData);
+            setFollowers(userData.followerDetails[0] && userData.followerDetails[0].followingList.length || 0);
+            setFollowing(userData.followingDetails[0] && userData.followingDetails[0].followingList.length || 0);
 
         }
     }, [userData, state.url]);
@@ -129,7 +163,7 @@ const UserProfile: FC = () => {
                         <div className="follow-section">
 
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                <button onClick={handleFollow} className="follow-button">
+                                <button id={userId} onClick={(e) => handleFollow(e, isFollowing)} className="follow-button">
                                     {isFollowing ? 'Unfollow' : 'Follow'}
                                 </button>
                             </div>

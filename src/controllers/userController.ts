@@ -4,8 +4,9 @@ import { Following } from "../models/Following";
 
 import { Types } from "mongoose";
 import { error } from "console";
+import { Follower } from "../models/Followers";
 
-export const findUsersByUsername = async (
+export const findUsersByUserName = async (
   req: any,
   res: any
 ): Promise<void> => {
@@ -20,7 +21,6 @@ export const findUsersByUsername = async (
         followingList: [],
       });
     }
-    console.log("sdfsDF",followings);
 
     if (!username) {
       res.status(400).json({ message: "Username is required" });
@@ -30,10 +30,6 @@ export const findUsersByUsername = async (
     const users = await User.find({
       fullName: { $regex: username, $options: "i" },
     });
-
-    // const following = await Following.findOne({ userId: currentUserId });
-    // console.log(following);
-    
     const usersWithFollowingStatus = users.map((user) => ({
       ...user.toObject(),
       isFollowing: followings
@@ -60,6 +56,9 @@ export const followUser = async (req: any, res: any) => {
   try {
     const userIdToFollow = req.body.userId;
     const userId = req.userId;
+
+    console.log("userId user want to follow", userId, userIdToFollow);
+
     if (!userIdToFollow || !Types.ObjectId.isValid(userIdToFollow)) {
       return res.status(400).json({ message: "Invalid or missing user ID" });
     }
@@ -86,18 +85,25 @@ export const followUser = async (req: any, res: any) => {
     );
 
     if (isAlreadyFollowing) {
-      return res
-        .status(400)
-        .json({ error: "You are already following this user" });
+      const index = following.followingList.findIndex(
+        (id) => id.toString() === userIdToFollow
+      );
+      console.log("index", index);
+      following.followingList.splice(index, 1);
+      await following.save();
+      return res.status(200).json({
+        message: `You have unfollowed ${userToFollow.fullName}`,
+        isFollowing: false,
+      });
+    } else {
+      following.followingList.push(userId);
+
+      await following.save();
+      return res.status(200).json({
+        message: `You are now following ${userToFollow.fullName}`,
+        isFollowing: true,
+      });
     }
-
-    following.followingList.push(userIdToFollow);
-
-    await following.save();
-
-    res
-      .status(200)
-      .json({ message: `You are now following ${userToFollow.fullName}` });
   } catch (error) {
     console.error("Error in followUser:", error);
     res.status(500).json({
