@@ -133,6 +133,7 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
     postUserImage = postData.commentsDetails[0].userDetails.profileImage.includes('uploads\\users') ? `${state.url.length > 0 ? state.url : '../../../../../'}/`
       + postData.commentsDetails[0].userDetails.profileImage : postData.commentsDetails[0].userDetails.profileImage;
   }
+  console.log("postData", postData);
 
   return (
     <div className="post">

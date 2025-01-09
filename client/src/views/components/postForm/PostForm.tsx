@@ -95,7 +95,9 @@ const PostForm: FC<PostFormProps> = ({ addPost }) => {
                         fileInputRef.current.value = ""; // Clear the file input
                     }
                     console.log("Post created successfully");
-                    navigate('/home');
+                    // navigate('/home');
+                    window.location.reload();
+
                 } else {
                     alert("Error creating post");
                 }

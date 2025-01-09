@@ -129,9 +129,9 @@ export const uploadPostPicture = [
         },
       ]);
 
-      console.log("addMissingFieldsToPost", postWithDetails);
+      console.log("postWithDetails", postWithDetails);
       if (postWithDetails.length > 0) {
-        res.status(200).json({ post: postWithDetails[0] });
+        res.status(200).json(postWithDetails[0]);
       } else {
         res.status(404).json({ error: "Post not found" });
       }
