@@ -43,6 +43,7 @@ const UserProfile: FC = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
+                credentials: "include",
                 body: JSON.stringify({ userId }),
             });
             const data = await response.json();
@@ -64,8 +65,6 @@ const UserProfile: FC = () => {
     };
 
     useEffect(() => {
-
-
         const fetchUserPosts = async () => {
             try {
                 if (!userData) return;
@@ -82,6 +81,8 @@ const UserProfile: FC = () => {
                         Authorization: `Bearer ${token}`,
                         ...(userId && { UserId: `${userId}` }),
                     },
+                    credentials: "include",
+
                 });
 
                 if (!response.ok) {
@@ -190,8 +191,6 @@ const UserProfile: FC = () => {
                     )}
                 </div>
             </div>
-            {/* <TwitterReplies /> */}
-            {/* <TwitterReplies /> */}
         </>
     );
 };

@@ -39,6 +39,7 @@ const Home = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${userTwitterCookie}`,
           },
+          credentials: "include", // Include cookies in the request
         });
 
         if (!response.ok) {

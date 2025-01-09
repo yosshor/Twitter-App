@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
     cb(null, "uploads/posts/");
   },
   filename: (req: any, file: any, cb: any) => {
-    const postId = req.postId; 
+    const postId = req.postId;
     cb(null, `${postId}${path.extname(file.originalname)}`);
   },
 });
@@ -41,41 +41,97 @@ export const uploadPostPicture = [
         { $match: { _id: new mongoose.Types.ObjectId(postId) } },
         {
           $lookup: {
-            from: 'users',
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'userDetails'
-          }
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userDetails",
+          },
         },
-        { $unwind: '$userDetails' },
+        { $unwind: "$userDetails" },
         {
           $lookup: {
-            from: 'likes',
-            localField: '_id',
-            foreignField: 'postId',
-            as: 'likesDetails'
-          }
+            from: "likes",
+            localField: "_id",
+            foreignField: "postId",
+            as: "likesDetails",
+          },
+        },
+        {
+          $lookup: {
+            from: "comments",
+            localField: "_id",
+            foreignField: "postId",
+            as: "commentsDetails",
+          },
+        },
+        {
+          $unwind: {
+            path: "$commentsDetails",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "commentsDetails.userId",
+            foreignField: "_id",
+            as: "commentsDetails.userDetails",
+          },
+        },
+        {
+          $unwind: {
+            path: "$commentsDetails.userDetails",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            userDetails: { $first: "$userDetails" },
+            likesDetails: { $first: "$likesDetails" },
+            commentsDetails: { $push: "$commentsDetails" },
+            content: { $first: "$content" },
+            profileImage: { $first: "$userDetails.profileImage" },
+            image: { $first: "$image" },
+            createdAt: { $first: "$createdAt" },
+            followersCount: { $first: "$followersCount" },
+          },
         },
         {
           $project: {
-            'userDetails.fullName': 1,
-            'userDetails.email': 1,
-            'userDetails.createdAt': 1,
-            'userDetails.profileImage': 1,
-            'likesDetails.userId': 1,
-            'likesDetails.createdAt': 1,
+            _id: 1,
+            userDetails: {
+              fullName: 1,
+              email: 1,
+              createdAt: 1,
+              profileImage: 1,
+              _id: 1,
+            },
+            likesDetails: {
+              userId: 1,
+              createdAt: 1,
+            },
+            commentsDetails: {
+              userId: 1,
+              content: 1,
+              createdAt: 1,
+              userDetails: {
+                profileImage: 1,
+                fullName: 1,
+              },
+            },
             followersCount: 1,
             content: 1,
-            profileImage: '$userDetails.profileImage', // Include the profileImage from userDetails
+            profileImage: "$userDetails.profileImage", // Include the profileImage from userDetails
             image: 1, // Include the post image
-            createdAt: 1
-          }
-        }
+            createdAt: 1,
+          },
+        },
       ]);
 
-      console.log("postWithDetails", postWithDetails);
+      console.log("addMissingFieldsToPost", postWithDetails);
       if (postWithDetails.length > 0) {
-        res.status(200).json(postWithDetails[0]);
+        res.status(200).json({ post: postWithDetails[0] });
       } else {
         res.status(404).json({ error: "Post not found" });
       }

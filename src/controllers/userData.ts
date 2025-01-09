@@ -7,6 +7,13 @@ export default async function getCurrentUser(
 ): Promise<void> {
   try {
     const { userId, userData } = getUserIdAndData(req);
+    const userDataFromCookie = req.cookies.userTwitter;
+    console.log("userDataFromCookie", userDataFromCookie);
+    if (!userId && !userData) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
     const searchUserId = req.header("UserId");
     const user = await mongoose.model("User").aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(searchUserId ?? userId) } },

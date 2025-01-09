@@ -1,6 +1,7 @@
 import { useContext, FC, useState, useRef } from "react";
 import './PostForm.scss';
 import { productionState } from "../../../pages/home/HomePage";
+import { useNavigate } from "react-router-dom";
 
 interface PostFormProps {
     addPost: (newPost: any) => void;
@@ -23,6 +24,7 @@ async function addPostImage(image: File, token: string, postId: string, url: str
         headers: {
             Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
         body: imageFormData,
     });
 
@@ -42,6 +44,8 @@ const PostForm: FC<PostFormProps> = ({ addPost }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const state = useContext(productionState);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -64,6 +68,7 @@ const PostForm: FC<PostFormProps> = ({ addPost }) => {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
+                    credentials: "include",
                     body: formData,
                 });
 
@@ -75,6 +80,7 @@ const PostForm: FC<PostFormProps> = ({ addPost }) => {
                     //upload the image separately after post creation
                     if (selectedFile) {
                         const res = await addPostImage(selectedFile, token, postId, state.url);
+                        debugger;
                         addPost(res);
                         setSelectedFile(null);
                     }
@@ -89,6 +95,7 @@ const PostForm: FC<PostFormProps> = ({ addPost }) => {
                         fileInputRef.current.value = ""; // Clear the file input
                     }
                     console.log("Post created successfully");
+                    navigate('/home');
                 } else {
                     alert("Error creating post");
                 }

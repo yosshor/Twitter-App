@@ -12,6 +12,7 @@ export default async function getCurrentUser(url: string, userId?: string|null) 
                 "Authorization": `Bearer ${tokenUser}`,
                 ...(userId && { UserId: `${userId}` }),
             },
+            credentials: "include", // Include cookies in the request
         });
         if (response.ok) {
             const user = await response.json();
@@ -37,6 +38,8 @@ export async function getMinCurrentUserData(url: string) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${tokenUser}`,
             },
+            credentials: "include", // Include cookies in the request
+
         });
         if (response.ok) {
             const user = await response.json();
