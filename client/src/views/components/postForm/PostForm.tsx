@@ -96,7 +96,6 @@ const PostForm: FC<PostFormProps> = ({ addPost }) => {
                     }
                     console.log("Post created successfully");
                     // navigate('/home');
-                    window.location.reload();
 
                 } else {
                     alert("Error creating post");

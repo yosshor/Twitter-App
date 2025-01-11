@@ -7,6 +7,8 @@ import Comment from "../../../views/components/comment/Comment";
 import e from 'express';
 import TwitterReplies from '../replies/Replies';
 import { formatTimeAgo } from "../../../utils/get-formated-date";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export interface PostType {
   content: string;
@@ -46,6 +48,7 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
   const userTokenDetails = useContext(userToken);
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [showComment, setShowComment] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const handleUserClick = (e: any) => {
     const userId = e.currentTarget.id;
@@ -59,6 +62,17 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
     console.log("comment clicked", postData?._id);
     setShowCommentInput(!showCommentInput);
   }
+  const handleMenuToggle = () => {
+    setShowMenu(!showMenu);
+  };
+
+  const handleDelete = () => {
+    // delete logic
+    console.log('Delete option selected');
+    setShowMenu(!showMenu);
+
+  };
+
 
   const addComment = (newComment: any) => {
     if (
@@ -141,6 +155,19 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
         <img src={profileImage} alt="User" className="user-image" />
         <h3>{postData!.userDetails.fullName} @{userHandle}</h3>
         <p>{formatTimeAgo(postData?.createdAt)}</p>
+
+        <div className='user-actions'>
+          <span onClick={handleMenuToggle} style={{ cursor: 'pointer' }}>
+            <FontAwesomeIcon icon={faEllipsisV} />
+          </span>
+          {showMenu && (
+            <div className='dropdown-menu'>
+              <button className='delete-button' onClick={handleDelete}>
+                <FontAwesomeIcon icon={faTrash} /> Delete
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <div onClick={handlePostClick} className="post-details" id={postData!._id}>
         <p>{postData!.content}</p>
