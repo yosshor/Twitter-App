@@ -80,7 +80,6 @@ const PostForm: FC<PostFormProps> = ({ addPost }) => {
                     //upload the image separately after post creation
                     if (selectedFile) {
                         const res = await addPostImage(selectedFile, token, postId, state.url);
-                        debugger;
                         addPost(res);
                         setSelectedFile(null);
                     }

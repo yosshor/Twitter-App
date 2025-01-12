@@ -33,7 +33,7 @@ const Home = () => {
           throw new Error("No token found in cookies");
         }
 
-        const response = await fetch(`${devState.url}/api/post/get-all`, { 
+        const response = await fetch(`${devState.url}/api/post/get-all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -73,6 +73,8 @@ const Home = () => {
     setPosts([newPost, ...posts]);
   };
 
+
+
   return (
     <div className="home-wrapper">
       <div className="main-feed-content">
@@ -82,7 +84,7 @@ const Home = () => {
           <>
             {userData ? (
               <>
-                {minUserData && <Feed user={minUserData} posts={posts} addPost={addPost} />}
+                {minUserData && <Feed user={minUserData} posts={posts} addPost={addPost}  />}
               </>
             ) : (
               <div>No user data found.</div>

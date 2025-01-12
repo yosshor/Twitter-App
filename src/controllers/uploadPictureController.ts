@@ -46,7 +46,7 @@ export function getUserIdAndData(req: any): {
   userData: string;
 } {
   try {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.header("Authorization")?.replace("Bearer ", "") || req.cookies.userTwitter;
     const secret = process.env.SECRET!;
 
   // Try decoding without verifying first

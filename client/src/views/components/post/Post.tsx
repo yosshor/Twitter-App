@@ -34,10 +34,16 @@ export interface PostType {
   };
 }
 
+interface PostProps {
+  postData: PostType;
+  userId: string;
+  onDelete: (id: string) => void;
+
+}
 
 
 
-const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData }) => {
+const Post: FC<PostProps> = ({ userId, postData, onDelete }) => {
   const state = useContext(productionState);
   const [likesCount, setLikesCount] = useState(postData?.likesDetails?.length || 0);
   const [commentsCount, setCommentsCount] = useState(postData?.commentsDetails?.filter(comment => comment.userDetails
@@ -49,7 +55,7 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-
+  console.log(onDelete)
   const handleUserClick = (e: any) => {
     const userId = e.currentTarget.id;
     console.log("user clicked", userId);
@@ -66,11 +72,37 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
     setShowMenu(!showMenu);
   };
 
-  const handleDelete = () => {
-    // delete logic
-    console.log('Delete option selected');
-    setShowMenu(!showMenu);
+  const deletePost = async (id: string) => {
+    try {
+      const response = await fetch(`${state.url}/api/post/${id}/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (response.ok) {
+        console.log('Post deleted successfully');
+      }
+      else {
+        console.error('Error deleting post');
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  }
 
+
+  const handleDelete = () => {
+
+    if (!onDelete) {
+      console.error('onDelete is undefined');
+      return;
+    }
+    deletePost(postData._id);
+    onDelete(postData._id);
+    console.log('Delete successfully');
+    setShowMenu(!showMenu);
   };
 
 
@@ -147,13 +179,12 @@ const Post: FC<{ userId: string, postData?: PostType }> = ({ userId, postData })
     postUserImage = postData.commentsDetails[0].userDetails.profileImage.includes('uploads\\users') ? `${state.url.length > 0 ? state.url : '../../../../../'}/`
       + postData.commentsDetails[0].userDetails.profileImage : postData.commentsDetails[0].userDetails.profileImage;
   }
-  console.log("postData", postData);
 
   return (
     <div className="post">
-      <div onClick={handleUserClick} className="post-user-header" id={postData!.userDetails._id}>
-        <img src={profileImage} alt="User" className="user-image" />
-        <h3>{postData!.userDetails.fullName} @{userHandle}</h3>
+      <div className="post-user-header" id={postData!.userDetails._id}>
+        <img onClick={handleUserClick} src={profileImage} alt="User" className="user-image" />
+        <h3 onClick={handleUserClick} >{postData!.userDetails.fullName} @{userHandle}</h3>
         <p>{formatTimeAgo(postData?.createdAt)}</p>
 
         <div className='user-actions'>

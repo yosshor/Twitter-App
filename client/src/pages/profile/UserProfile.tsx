@@ -51,11 +51,6 @@ const UserProfile: FC = () => {
             if (response.ok) {
                 console.log(isFollowing ? `Unfollowed user with ID: ${userId}` : `Followed user with ID: ${userId}`);
                 setIsFollowing(data.isFollowing ? true : false);
-                // setUsers((prevUsers) =>
-                //     prevUsers.map((user) =>
-                //         user._id === userId ? { ...user, isFollowing: !isFollowing } : user
-                //     )
-                // );
             } else {
                 console.error(data.error);
             }
@@ -110,6 +105,11 @@ const UserProfile: FC = () => {
 
         }
     }, [userData, state.url]);
+
+    const handleDeletePost = (id: string) => {
+        console.log('Deleting post:', id);
+        setPosts((prevList) => prevList.filter((post) => post._id !== id));
+    };
 
     if (loading || isLoading) return <div>Loading...</div>;
     if (!userData || !minUserData) return <div>No user data available.</div>;
@@ -186,7 +186,11 @@ const UserProfile: FC = () => {
                         <p>No posts found for this user.</p>
                     ) : (
                         posts.map((post, index) => (
-                            <Post userId={minUserData.userId} key={index} postData={post} />
+                            <Post
+                                userId={minUserData.userId}
+                                key={index}
+                                postData={post}
+                                onDelete={handleDeletePost} />
                         ))
                     )}
                 </div>
