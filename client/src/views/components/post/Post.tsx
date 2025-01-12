@@ -55,7 +55,7 @@ const Post: FC<PostProps> = ({ userId, postData, onDelete }) => {
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-
+  
   const handleUserClick = (e: any) => {
     const userId = e.currentTarget.id;
     console.log("user clicked", userId);
@@ -179,7 +179,7 @@ const Post: FC<PostProps> = ({ userId, postData, onDelete }) => {
     postUserImage = postData.commentsDetails[0].userDetails.profileImage.includes('uploads\\users') ? `${state.url.length > 0 ? state.url : '../../../../../'}/`
       + postData.commentsDetails[0].userDetails.profileImage : postData.commentsDetails[0].userDetails.profileImage;
   }
-
+  // console.log(userId, postData.userDetails._id ,location.pathname )
   return (
     <div className="post">
       <div className="post-user-header" id={postData!.userDetails._id}>
@@ -187,7 +187,7 @@ const Post: FC<PostProps> = ({ userId, postData, onDelete }) => {
         <h3 onClick={handleUserClick} >{postData!.userDetails.fullName} @{userHandle}</h3>
         <p>{formatTimeAgo(postData?.createdAt)}</p>
 
-        {userId === postData.userDetails._id &&
+        {userId === postData.userDetails._id || location.pathname === `/home/profile/` &&
           <div className='user-actions'>
             <span onClick={handleMenuToggle} style={{ cursor: 'pointer' }}>
               <FontAwesomeIcon icon={faEllipsisV} />

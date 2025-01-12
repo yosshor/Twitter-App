@@ -40,7 +40,6 @@ const Feed: FC<FeedProps> = ({ user, posts, addPost }) => {
   useEffect(() => {
     setPostList(posts);
   }, [posts]);
-  console.log(handleDeletePost);
   return (
     <div className="feed">
       <PostForm addPost={addPost} />
