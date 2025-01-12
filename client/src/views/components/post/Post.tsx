@@ -55,7 +55,7 @@ const Post: FC<PostProps> = ({ userId, postData, onDelete }) => {
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  console.log(onDelete)
+
   const handleUserClick = (e: any) => {
     const userId = e.currentTarget.id;
     console.log("user clicked", userId);
@@ -187,18 +187,19 @@ const Post: FC<PostProps> = ({ userId, postData, onDelete }) => {
         <h3 onClick={handleUserClick} >{postData!.userDetails.fullName} @{userHandle}</h3>
         <p>{formatTimeAgo(postData?.createdAt)}</p>
 
-        <div className='user-actions'>
-          <span onClick={handleMenuToggle} style={{ cursor: 'pointer' }}>
-            <FontAwesomeIcon icon={faEllipsisV} />
-          </span>
-          {showMenu && (
-            <div className='dropdown-menu'>
-              <button className='delete-button' onClick={handleDelete}>
-                <FontAwesomeIcon icon={faTrash} /> Delete
-              </button>
-            </div>
-          )}
-        </div>
+        {userId === postData.userDetails._id &&
+          <div className='user-actions'>
+            <span onClick={handleMenuToggle} style={{ cursor: 'pointer' }}>
+              <FontAwesomeIcon icon={faEllipsisV} />
+            </span>
+            {showMenu && (
+              <div className='dropdown-menu'>
+                <button className='delete-button' onClick={handleDelete}>
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </button>
+              </div>
+            )}
+          </div>}
       </div>
       <div onClick={handlePostClick} className="post-details" id={postData!._id}>
         <p>{postData!.content}</p>
