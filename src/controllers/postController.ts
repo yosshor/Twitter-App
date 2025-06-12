@@ -311,6 +311,7 @@ export const getUserPosts = async (req: any, res: any) => {
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
+
     const posts = await Post.aggregate([
       {
         $match: {
@@ -378,6 +379,7 @@ export const getUserPosts = async (req: any, res: any) => {
           "userDetails.email": 1,
           "userDetails.createdAt": 1,
           "userDetails.profileImage": 1,
+          "userDetails._id": 1,
           "likesDetails.userId": 1,
           "likesDetails.createdAt": 1,
           "commentsDetails.userId": 1,

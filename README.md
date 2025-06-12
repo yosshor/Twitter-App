@@ -141,6 +141,8 @@ uploads/
 - `GET /api/post/get-post-details/:Id`: Get details of a specific post.
 - `POST /api/post/:id/like`: Like or unlike a post.
 - `POST /api/post/:id/comment`: Add a comment to a post.
+- `DELETE /api/post/:id/delete`: Delete a post.
+
 
 ## Environment Variables
 
